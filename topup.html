@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title id="pageTitle">เติมเงินเข้าสู่ระบบ — GameMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- นำเข้า html2canvas สำหรับแปลงใบเสร็จเป็นรูปภาพ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    :root { 
+      --bg-color: #0d1117; --card-bg: #161b22; --border-color: #30363d; 
+      --text-main: #f0f6fc; --text-muted: #8b949e; --primary: #ff3b5c; 
+      --primary-hover: #e0324f; --success: #4ae374; --warning: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Prompt', sans-serif; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+    .navbar { background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
+    .navbar-container { display: flex; align-items: center; justify-content: space-between; height: 70px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .logo { background: var(--primary); color: #fff; font-weight: 700; padding: 6px 12px; border-radius: 8px; box-shadow: 0 0 12px rgba(255, 59, 92, 0.4); }
+    .brand-name b { font-size: 1.1rem; display: block; line-height: 1.2; }
+    .brand-name small { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a { color: var(--text-muted); transition: 0.2s; font-size: 0.95rem; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-main); }
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+    .btn { padding: 14px 20px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; font-family: inherit; font-size: 0.95rem; }
+    .btn.red { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(255, 59, 92, 0.25); width: 100%; }
+    .btn.red:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn.secondary { background: #21262d; color: var(--text-main); border: 1px solid var(--border-color); width: 100%; }
+    .btn.secondary:hover { background: #30363d; border-color: var(--text-muted); }
+    .btn.ghost { background: transparent; color: var(--text-main); padding: 10px 20px; }
+    .page-title { margin: 20px 0; }
+    .eyebrow { color: var(--primary); font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; }
+    
+    .checkout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 20px; align-items: stretch; }
+    .checkout-grid.single-col { grid-template-columns: 1fr; max-width: 600px; margin-left: auto; margin-right: auto; }
+    
+    .card-box { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 28px; display: flex; flex-direction: column; justify-content: space-between; }
+    .card-box h3 { font-size: 1.15rem; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    
+    .summary-content-wrap { display: flex; flex-direction: column; flex-grow: 1; }
+    .summary-item { display: flex; gap: 15px; margin-bottom: 20px; }
+    .summary-thumb { width: 80px; height: 80px; background: #21262d; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--text-muted); font-size: 0.8rem; }
+    .summary-details h4 { font-size: 1rem; margin-bottom: 4px; }
+    .summary-details p { color: var(--text-muted); font-size: 0.85rem; }
+    .price-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; color: var(--text-muted); }
+    .price-row.total { font-size: 1.05rem; color: var(--text-main); font-weight: 700; border-top: 1px dashed var(--border-color); padding-top: 14px; margin-top: auto; }
+    .price-row.total span:last-child { color: var(--success); }
+    
+    /* Amount Grid & Buttons */
+    .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+    .amount-btn { background: #21262d; border: 1px solid var(--border-color); color: var(--text-main); padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; text-align: center; transition: 0.2s; font-family: inherit; }
+    .amount-btn:hover { border-color: var(--primary); background: rgba(255, 59, 92, 0.05); }
+    .amount-btn.active { background: rgba(255, 59, 92, 0.15); border-color: var(--primary); color: var(--primary); font-weight: 700; }
+    
+    /* Custom Stylized Input Group */
+    .custom-input-group { display: flex; align-items: center; background: #0d1117; border: 1px solid var(--border-color); border-radius: 8px; padding: 2px 14px; transition: all 0.2s ease; margin-top: 10px; }
+    .custom-input-group:focus-within { border-color: var(--primary); box-shadow: 0 0 10px rgba(255, 59, 92, 0.2); }
+    .custom-input-group .prefix { color: var(--primary); font-weight: 700; font-size: 1.1rem; margin-right: 8px; }
+    .custom-input-group input { background: transparent; border: none; color: #fff; font-family: inherit; font-size: 1.05rem; font-weight: 600; padding: 10px 0; width: 100%; outline: none; }
+    
+    /* Chrome, Safari, Edge, Opera: Hide Arrow Number Spinner */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    /* Firefox */
+    input[type=number] { -moz-appearance: textfield; }
+
+    .payment-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+    .pay-option { background: #21262d; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 8px; text-align: center; cursor: pointer; font-size: 0.85rem; transition: all 0.2s ease; }
+    .pay-option:hover { border-color: var(--primary); }
+    .pay-option.active { border-color: var(--primary); background: rgba(255, 59, 92, 0.1); font-weight: 600; color: #fff; }
+    
+    .payment-content { background: #0d1117; border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px; }
+    .qr-img { width: 160px; height: 160px; background: #fff; margin: 10px auto; padding: 10px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 700; }
+    
+    .form-group { margin-bottom: 20px; text-align: left; }
+    .form-group label { display: block; font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted); font-weight: 500; }
+    .form-group input[type="text"] { width: 100%; background: #0d1117; border: 1px solid var(--border-color); color: var(--text-main); padding: 12px 16px; border-radius: 8px; font-family: inherit; outline: none; font-size: 0.95rem; }
+    .form-group input[type="text"]:focus { border-color: var(--primary); }
+    
+    /* File Input Styling */
+    .file-upload-box { position: relative; background: #0d1117; border: 1px dashed var(--border-color); border-radius: 8px; padding: 14px; text-align: center; cursor: pointer; transition: 0.2s; }
+    .file-upload-box:hover { border-color: var(--primary); background: rgba(255, 59, 92, 0.03); }
+    .file-upload-box input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    
+    .credit-alert-box { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 14px; border-radius: 8px; font-size: 0.88rem; color: #fcd34d; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px; }
+    .action-buttons-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto; }
+    
+    /* Modal / Receipt Styles */
+    .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; overflow-y: auto; padding: 20px; }
+    .custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .custom-modal { background: var(--card-bg); border: 1px solid var(--border-color); width: 100%; max-width: 480px; padding: 30px; border-radius: 20px; text-align: left; transform: scale(0.85) translateY(15px); opacity: 0; transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; }
+    .custom-modal-overlay.active .custom-modal { transform: scale(1) translateY(0); opacity: 1; }
+    .receipt-header { text-align: center; border-bottom: 2px dashed var(--border-color); padding-bottom: 15px; margin-bottom: 15px; }
+    .receipt-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; color: var(--text-muted); }
+    .receipt-row span:last-child { color: var(--text-main); font-weight: 500; }
+    .receipt-total { border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 12px; font-size: 1rem; font-weight: 700; color: var(--text-main); display: flex; justify-content: space-between; }
+
+    footer { background: var(--card-bg); border-top: 1px solid var(--border-color); padding: 30px 20px; margin-top: 60px; color: var(--text-muted); font-size: 0.85rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    @media (max-width: 768px) { .checkout-grid { grid-template-columns: 1fr; } .nav-links { display: none; } .payment-options, .amount-grid, .action-buttons-wrapper { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- Confirm Modal -->
+  <div class="custom-modal-overlay" id="confirmModal">
+    <div class="custom-modal" style="max-width: 440px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+        <div style="width: 42px; height: 42px; background: rgba(255, 59, 92, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.2rem; font-weight: bold;">🛒</div>
+        <div>
+          <h3 style="border: none; padding: 0; margin: 0; font-size: 1.15rem;">ยืนยันรายการ</h3>
+          <p style="color: var(--text-muted); font-size: 0.8rem;">กรุณาตรวจสอบรายละเอียดก่อนทำรายการ</p>
+        </div>
+      </div>
+
+      <div style="background: #0d1117; border: 1px solid var(--border-color); border-radius: 10px; padding: 14px; margin-bottom: 18px; font-size: 0.88rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <span style="color: var(--text-muted);">รายการ:</span>
+          <span id="popupProductName" style="font-weight: 600; color: #fff; text-align: right;">-</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <span style="color: var(--text-muted);">รหัสรายการ:</span>
+          <span id="popupProductId" style="color: var(--primary); font-weight: 600;">-</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <span style="color: var(--text-muted);">หมวดหมู่:</span>
+          <span id="popupCategory">-</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; border-top: 1px dashed var(--border-color); padding-top: 6px; margin-top: 6px;">
+          <span style="color: var(--text-muted);">ยอดชำระสุทธิ:</span>
+          <span id="popupPrice" style="color: var(--success); font-weight: 700;">-</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button type="button" class="btn secondary" onclick="closeConfirmModal()">ยกเลิก</button>
+        <button type="button" class="btn red" onclick="executeCheckout()">ยืนยันทำรายการ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt Modal -->
+  <div class="custom-modal-overlay" id="successModal">
+    <div class="custom-modal" id="receiptCardBox">
+      <div class="receipt-header">
+        <div style="width: 50px; height: 50px; background: rgba(46, 160, 67, 0.15); border: 2px solid var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto;">
+          <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; stroke: var(--success); stroke-width: 3; fill: none;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <h3 id="modalTitle" style="margin-bottom: 4px; border:none; padding:0; justify-content:center;">เติมเงินสำเร็จ!</h3>
+        <p style="color: var(--success); font-size: 0.85rem;" id="receiptDate">วันที่: -</p>
+      </div>
+
+      <div class="receipt-row"><span>ชื่อผู้ซื้อ / ออกใบเสร็จ:</span> <span id="recBuyerName">-</span></div>
+      <div class="receipt-row"><span>รายการสินค้า:</span> <span id="recProductName">-</span></div>
+      <div class="receipt-row"><span>รหัสสินค้า:</span> <span id="recProductId">-</span></div>
+      <div class="receipt-row"><span>หมวดหมู่:</span> <span id="recCategory">-</span></div>
+      
+      <div style="border-top: 1px dashed var(--border-color); margin: 12px 0;"></div>
+      
+      <div class="receipt-row" id="recUserCreditRow"><span>เครดิตในบัญชี (เดิม):</span> <span id="recUserCredit">฿0</span></div>
+      <div class="receipt-row"><span id="recPriceLabel">จำนวนเงินเติม:</span> <span id="recPrice" style="color: var(--primary);">฿0</span></div>
+      <div class="receipt-row" id="recAddedRow" style="display: none;"><span>ยอดเติมเพิ่ม (ส่วนต่าง):</span> <span id="recAddedAmount" style="color: var(--warning);">฿0</span></div>
+      <div class="receipt-row"><span>เครดิตคงเหลือปัจจุบัน:</span> <span id="recRemaining" style="color: var(--success); font-weight: 600;">฿0</span></div>
+      
+      <div class="receipt-total">
+        <span>สถานะการชำระ:</span>
+        <span style="color: var(--success);" id="recStatusText">เติมเงินสำเร็จ</span>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button class="btn secondary" onclick="downloadReceiptImage()" style="flex: 1;">💾 บันทึกรูป</button>
+        <button class="btn red" onclick="location.href='index.html'" style="flex: 1;">เสร็จสิ้น / กลับหน้าแรก</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="navbar">
+    <div class="navbar-container">
+      <a class="brand" href="index.html">
+        <div class="logo">GM</div>
+        <div class="brand-name"><b>GameMarket</b><small>ACCOUNT STORE</small></div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">หน้าหลัก</a>
+        <a href="games.html">สินค้าทั้งหมด</a>
+        <a href="how-to-buy.html">วิธีการซื้อ</a>
+        <a href="contact.html">ติดต่อเรา</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="btn ghost" href="login.html">เข้าสู่ระบบ</a>
+        <a class="btn red" href="register.html">สมัครสมาชิก</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="page-title">
+      <span class="eyebrow" id="eyebrowText">TOPUP SYSTEM</span>
+      <h1 id="mainHeading">เติมเงินเข้าบัญชี</h1>
+    </div>
+
+    <div class="checkout-grid" id="mainGrid">
+      <div class="card-box" id="orderSummaryBox">
+        <h3>🛒 สรุปรายการสั่งซื้อ</h3>
+        <div class="summary-content-wrap">
+          <div class="summary-item">
+            <div class="summary-thumb" id="productThumb">GAME</div>
+            <div class="summary-details">
+              <h4 id="productName">-</h4>
+              <p id="productCategory">-</p>
+              <p style="color: var(--primary);" id="productId">-</p>
+            </div>
+          </div>
+          
+          <div class="price-row"><span>เครดิตในบัญชีของคุณ</span><span id="userCreditSummaryVal" style="color: var(--warning);">฿0</span></div>
+          <div class="price-row"><span>ราคาสินค้า</span><span id="priceVal" style="color: var(--primary);">฿0</span></div>
+          <div class="price-row" id="remainingCreditRow" style="display: none;"><span>เครดิตคงเหลือหลังหัก</span><span id="remainingCreditVal" style="color: var(--success); font-weight: 600;">฿0</span></div>
+          <div class="price-row total"><span>ยอดที่ชำระทั้งหมด หักจากเครดิตที่มี</span><span id="totalPriceVal">฿0</span></div>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <div>
+          <h3 id="paymentSectionTitle">💳 เลือกช่องทางชำระเงินเพื่อเติมเงิน</h3>
+          
+          <div id="insufficientCreditAlert" style="display: none;" class="credit-alert-box">
+            <span>⚠️</span>
+            <div><b>เครดิตของคุณไม่เพียงพอ:</b> คุณมีเครดิต <b><span id="userCreditSpan">0</span> ฿</b> ขาดอีก <b><span id="missingCreditSpan">0</span> ฿</b> ถึงจะครบราคาสินค้า กรุณาโอนเฉพาะส่วนที่ขาดนี้ครับ</div>
+          </div>
+
+          <div id="topupAmountSection" style="display: none; margin-bottom: 20px;">
+            <label style="display: block; font-size: 0.85rem; margin-bottom: 10px; color: var(--text-muted);">เลือกหรือระบุจำนวนเงินที่ต้องการเติม (บาท)</label>
+            <div class="amount-grid">
+              <button type="button" class="amount-btn" onclick="setTopupAmount(50, this)">50 ฿</button>
+              <button type="button" class="amount-btn" onclick="setTopupAmount(100, this)">100 ฿</button>
+              <button type="button" class="amount-btn" onclick="setTopupAmount(300, this)">300 ฿</button>
+              <button type="button" class="amount-btn active" onclick="setTopupAmount(500, this)">500 ฿</button>
+              <button type="button" class="amount-btn" onclick="setTopupAmount(1000, this)">1,000 ฿</button>
+              <button type="button" class="amount-btn" onclick="focusCustomInput(this)">กำหนดเอง</button>
+            </div>
+            
+            <!-- Custom Input Design -->
+            <div class="custom-input-group">
+              <span class="prefix">฿</span>
+              <input type="number" id="customAmountInput" value="500" min="1" placeholder="กรอกจำนวนเงิน..." oninput="updateCustomAmount(this.value)">
+            </div>
+          </div>
+
+          <div class="payment-options" id="paymentOptionsContainer">
+            <div class="pay-option active" onclick="selectPayment('promptpay')">📲 พร้อมเพย์</div>
+            <div class="pay-option" onclick="selectPayment('bank')">🏦 โอนผ่านธนาคาร</div>
+            <div class="pay-option" onclick="selectPayment('wallet')">🟧 TrueMoney</div>
+          </div>
+
+          <div id="pay-promptpay" class="payment-content">
+            <p style="font-size:0.85rem; color:var(--text-muted);">สแกน QR Code พร้อมเพย์เพื่อชำระเงิน</p>
+            <img id="qrImageElement" src="images/รูปปกคลัง/QR001.jpg" alt="PromptPay QR" style="width:100%; height:100%; object-fit:contain;">
+            <p style="font-weight: 700; color: var(--success); font-size: 1.1rem;" id="promptpayPriceText">ยอดโอน: ฿0.00</p>
+          </div>
+
+          <div id="pay-bank" class="payment-content" style="display: none;">
+            <p style="font-size:0.85rem; color:var(--text-muted);">ธนาคารกสิกรไทย (KBANK)</p>
+            <h2 style="color:var(--primary); margin: 8px 0;">209-3-68880-8</h2>
+            <p>ชื่อบัญชี: บจก. ธีรภัทร เกตรุาช</p>
+            <p style="font-weight: 700; color: var(--success); margin-top: 5px;" id="bankPriceText">ยอดโอน: ฿0.00</p>
+          </div>
+
+          <div id="pay-wallet" class="payment-content" style="display: none;">
+            <p style="font-size:0.85rem; color:var(--text-muted);">TrueMoney Wallet</p>
+            <h2 style="color:#ff9900; margin: 8px 0;">065-046-3782</h2>
+            <p>ชื่อบัญชี: บจก. ธีรภัทร เกตรุาช</p>
+            <p style="font-weight: 700; color: var(--success); margin-top: 5px;" id="walletPriceText">ยอดโอน: ฿0.00</p>
+          </div>
+
+          <form onsubmit="handleFormSubmitPrecheck(event)">
+            <div class="form-group" id="slipGroup">
+              <label>แนบสลิปโอนเงิน (Slip)</label>
+              <div class="file-upload-box">
+                <span id="fileNameText" style="color: var(--text-muted); font-size: 0.9rem;">📁 คลิกที่นี่เพื่อเลือกรูปภาพสลิปโอนเงิน</span>
+                <input type="file" id="slipFile" accept="image/*" required onchange="updateFileName(this)">
+              </div>
+            </div>
+            <div class="form-group" id="contactGroup">
+              <label>ชื่อ-นามสกุล หรือ ชื่อผู้ซื้อ สำหรับออกใบเสร็จ</label>
+              <input type="text" id="contactInfo" placeholder="เช่น นายธีรภัทร ใจดี" required>
+            </div>
+        </div>
+            
+        <div class="action-buttons-wrapper">
+          <button type="button" class="btn secondary" id="cancelBtn" onclick="history.back()" style="display: none;">ยกเลิกการซื้อ</button>
+          <button type="submit" class="btn red" id="submitBtnText">ยืนยันการเติมเงินและแจ้งสลิป</button>
+        </div>
+          </form>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <b>GameMarket</b>
+      <span>© 2026 GameMarket Demo. All rights reserved.</span>
+      <a href="contact.html">ติดต่อเรา</a>
+    </div>
+  </footer>
+
+  <script>
+    let currentAmount = 500;
+    let modeType = 'topup'; 
+    let userCredit = 0;
+    let productPrice = 0;
+    let finalPayablePrice = 0;
+    let globalProductName = '';
+    let globalProductId = '';
+    let globalCategory = '';
+
+    function checkLoginStatus() {
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true' && user;
+      const navActions = document.querySelector('.nav-actions');
+
+      if (isLoggedIn && navActions) {
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let foundUser = users.find(u => u.email === user.email);
+        if (foundUser) {
+          user.credit = foundUser.credit;
+          localStorage.setItem('currentUser', JSON.stringify(user));
+        }
+        userCredit = Number(user.credit || 0);
+        const fmt = userCredit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ฿';
+        
+        navActions.innerHTML = `
+          <div class="user-menu-container" style="position: relative;">
+            <div class="user-btn" onclick="toggleMenu()" style="display: flex; align-items: center; gap: 10px; background: #21262d; border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 30px; cursor: pointer;">
+              <div class="avatar-sm" style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff;">${user.username.charAt(0).toUpperCase()}</div>
+              <div style="text-align: left;">
+                <div style="font-size: 0.85rem; font-weight: 600; color: #fff; line-height: 1.2;">${user.username}</div>
+                <div style="font-size: 0.7rem; color: var(--success); font-weight: 500;">${fmt}</div>
+              </div>
+            </div>
+            <div class="dropdown-menu" id="dropdownMenu" style="position: absolute; right: 0; top: 48px; width: 240px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; flex-direction: column; overflow: hidden; z-index: 200; padding: 8px;">
+              <div style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">
+                <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">${user.username}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">${user.email}</div>
+                <div style="background: rgba(255, 59, 92, 0.15); border: 1px solid rgba(255, 59, 92, 0.3); border-radius: 8px; padding: 6px 10px; margin-top: 8px; font-size: 0.85rem; font-weight: 600; color: var(--primary);">เครดิต: ${fmt}</div>
+              </div>
+              <a href="profile.html" style="padding: 10px 12px; font-size: 0.85rem; color: var(--text-muted); display: block; border-radius: 6px;">👤 โปรไฟล์</a>
+              <a href="topup.html" style="padding: 10px 12px; font-size: 0.85rem; color: var(--text-muted); display: block; border-radius: 6px;">💳 เติมเงิน</a>
+              <a href="topup-history.html" style="padding: 10px 12px; font-size: 0.85rem; color: var(--text-muted); display: block; border-radius: 6px;">💰 ประวัติการเติมเงิน</a>
+              <a href="order-history.html" style="padding: 10px 12px; font-size: 0.85rem; color: var(--text-muted); display: block; border-radius: 6px;">📦 ประวัติการซื้อของ</a>
+              <button onclick="logout()" style="margin-top: 4px; background: var(--primary); color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: inherit; width: 100%;">ออกจากระบบ</button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById('dropdownMenu');
+      if (menu) menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    window.onclick = function(event) {
+      if (!event.target.closest('.user-menu-container')) {
+        const menu = document.getElementById('dropdownMenu');
+        if (menu && menu.style.display === 'flex') menu.style.display = 'none';
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('currentUser');
+      window.location.reload();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      checkLoginStatus();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const name = urlParams.get('name');
+      const price = urlParams.get('price');
+      const category = urlParams.get('category');
+      const id = urlParams.get('id');
+
+      if (name) {
+        productPrice = Number(price || 0);
+        globalProductName = name;
+        globalProductId = id || '#000';
+        globalCategory = category || 'ทั่วไป';
+
+        finalPayablePrice = productPrice;
+
+        document.getElementById('orderSummaryBox').style.display = 'flex';
+        document.getElementById('mainGrid').classList.remove('single-col');
+        document.getElementById('productName').innerText = name;
+        document.getElementById('productThumb').innerText = category || 'GAME';
+        document.getElementById('productCategory').innerText = 'หมวดหมู่: ' + globalCategory;
+        document.getElementById('productId').innerText = 'รหัสสินค้า: ' + globalProductId;
+        
+        document.getElementById('userCreditSummaryVal').innerText = '฿' + userCredit.toLocaleString();
+        document.getElementById('priceVal').innerText = '฿' + productPrice.toLocaleString();
+
+        if (userCredit >= finalPayablePrice) {
+          modeType = 'buy_credit';
+          currentAmount = finalPayablePrice;
+          
+          const remainingCredit = userCredit - finalPayablePrice;
+          document.getElementById('remainingCreditVal').innerText = '฿' + remainingCredit.toLocaleString();
+          document.getElementById('remainingCreditRow').style.display = 'flex';
+
+          document.getElementById('topupAmountSection').style.display = 'none';
+          document.getElementById('paymentOptionsContainer').style.display = 'none';
+          document.getElementById('pay-promptpay').style.display = 'none';
+          document.getElementById('pay-bank').style.display = 'none';
+          document.getElementById('pay-wallet').style.display = 'none';
+          document.getElementById('slipGroup').style.display = 'none';
+          document.getElementById('slipFile').removeAttribute('required');
+          document.getElementById('insufficientCreditAlert').style.display = 'none';
+
+          document.getElementById('paymentSectionTitle').innerText = '✅ ยืนยันการชำระเงินด้วยเครดิต';
+          document.getElementById('contactGroup').style.display = 'block';
+          document.getElementById('contactInfo').setAttribute('required', 'true');
+          
+          document.getElementById('cancelBtn').style.display = 'block';
+          document.getElementById('submitBtnText').innerText = 'ยืนยันการซื้อ';
+          document.getElementById('totalPriceVal').innerText = '฿0 (หักจากเครดิตคงเหลือ)';
+        } else {
+          modeType = 'buy_slip';
+          const missingAmount = finalPayablePrice - userCredit;
+          currentAmount = missingAmount;
+
+          document.getElementById('remainingCreditRow').style.display = 'none';
+          document.getElementById('userCreditSpan').innerText = userCredit.toLocaleString();
+          document.getElementById('missingCreditSpan').innerText = missingAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+          document.getElementById('insufficientCreditAlert').style.display = 'flex';
+          document.getElementById('topupAmountSection').style.display = 'none'; 
+          document.getElementById('paymentOptionsContainer').style.display = 'grid';
+          document.getElementById('pay-promptpay').style.display = 'block';
+          document.getElementById('slipGroup').style.display = 'block';
+          document.getElementById('slipFile').setAttribute('required', 'true');
+          document.getElementById('contactGroup').style.display = 'block';
+          document.getElementById('contactInfo').setAttribute('required', 'true');
+
+          document.getElementById('paymentSectionTitle').innerText = '💳 โอนส่วนต่างที่เหลือ';
+          document.getElementById('cancelBtn').style.display = 'block';
+          document.getElementById('submitBtnText').innerText = 'ยืนยันชำระเงินและแจ้งสลิป';
+          document.getElementById('totalPriceVal').innerText = '฿' + missingAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+          updateAmountsDisplay(missingAmount);
+        }
+
+      } else {
+        modeType = 'topup';
+        currentAmount = 500;
+
+        document.getElementById('orderSummaryBox').style.display = 'none';
+        document.getElementById('mainGrid').classList.add('single-col');
+        document.getElementById('topupAmountSection').style.display = 'block';
+        document.getElementById('insufficientCreditAlert').style.display = 'none';
+        document.getElementById('remainingCreditRow').style.display = 'none';
+
+        document.getElementById('pageTitle').innerText = 'เติมเงินเข้าสู่ระบบ — GameMarket';
+        document.getElementById('eyebrowText').innerText = 'TOPUP SYSTEM';
+        document.getElementById('mainHeading').innerText = 'เติมเงินเข้าบัญชี';
+        document.getElementById('paymentSectionTitle').innerText = '💳 เลือกช่องทางชำระเงินเพื่อเติมเงิน';
+        
+        document.getElementById('slipGroup').style.display = 'block';
+        document.getElementById('slipFile').setAttribute('required', 'true');
+        document.getElementById('contactGroup').style.display = 'none';
+        document.getElementById('contactInfo').removeAttribute('required');
+        document.getElementById('cancelBtn').style.display = 'none';
+        document.getElementById('submitBtnText').innerText = 'ยืนยันการเติมเงินและแจ้งสลิป';
+
+        updateAmountsDisplay(currentAmount);
+      }
+    });
+
+    function setTopupAmount(amount, btnElement) {
+      currentAmount = amount;
+      document.getElementById('customAmountInput').value = amount;
+      document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+      if(btnElement) btnElement.classList.add('active');
+      updateAmountsDisplay(currentAmount);
+    }
+
+    function focusCustomInput(btnElement) {
+      document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+      if(btnElement) btnElement.classList.add('active');
+      const input = document.getElementById('customAmountInput');
+      input.focus();
+      input.select();
+    }
+
+    function updateCustomAmount(val) {
+      const num = Number(val);
+      if (num >= 0) {
+        currentAmount = num;
+        updateAmountsDisplay(currentAmount);
+      }
+    }
+
+    function updateFileName(input) {
+      const fileNameText = document.getElementById('fileNameText');
+      if (input.files && input.files[0]) {
+        fileNameText.innerText = '✅ ชนิดไฟล์: ' + input.files[0].name;
+        fileNameText.style.color = 'var(--success)';
+        fileNameText.style.fontWeight = '600';
+      } else {
+        fileNameText.innerText = '📁 คลิกที่นี่เพื่อเลือกรูปภาพสลิปโอนเงิน';
+        fileNameText.style.color = 'var(--text-muted)';
+        fileNameText.style.fontWeight = 'normal';
+      }
+    }
+
+    function updateAmountsDisplay(amt) {
+      const formatted = amt.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      document.getElementById('promptpayPriceText').innerText = 'ยอดโอน: ฿' + formatted;
+      document.getElementById('bankPriceText').innerText = 'ยอดโอน: ฿' + formatted;
+      document.getElementById('walletPriceText').innerText = 'ยอดโอน: ฿' + formatted;
+    }
+
+    function selectPayment(type) {
+      document.getElementById('pay-promptpay').style.display = (type === 'promptpay') ? 'block' : 'none';
+      document.getElementById('pay-bank').style.display = (type === 'bank') ? 'block' : 'none';
+      document.getElementById('pay-wallet').style.display = (type === 'wallet') ? 'block' : 'none';
+
+      const options = document.querySelectorAll('.pay-option');
+      options.forEach(opt => opt.classList.remove('active'));
+      if (type === 'promptpay') options[0].classList.add('active');
+      if (type === 'bank') options[1].classList.add('active');
+      if (type === 'wallet') options[2].classList.add('active');
+    }
+
+    function handleFormSubmitPrecheck(event) {
+      event.preventDefault();
+
+      document.getElementById('popupProductName').innerText = globalProductName || 'เติมเงินเข้าบัญชี';
+      document.getElementById('popupProductId').innerText = globalProductId || '-';
+      document.getElementById('popupCategory').innerText = globalCategory || 'Topup';
+      
+      if (modeType === 'topup') {
+        document.getElementById('popupPrice').innerText = '฿' + currentAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      } else if (modeType === 'buy_credit') {
+        document.getElementById('popupPrice').innerText = '฿' + finalPayablePrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (หักเครดิต)';
+      } else {
+        const missingAmount = finalPayablePrice - userCredit;
+        document.getElementById('popupPrice').innerText = '฿' + missingAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (โอนส่วนต่าง)';
+      }
+
+      document.getElementById('confirmModal').classList.add('active');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.remove('active');
+    }
+
+    async function executeCheckout() {
+      closeConfirmModal();
+
+      const user = JSON.parse(localStorage.getItem('currentUser')) || {};
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+      const buyerNameInput = document.getElementById('contactInfo').value;
+
+      if (modeType === 'buy_credit') {
+        processOrderLocally(user, users, buyerNameInput, 0, 'ชำระผ่านเครดิต');
+        return;
+      }
+
+      const slipInput = document.getElementById('slipFile');
+      if (!slipInput.files || !slipInput.files[0]) {
+        alert('กรุณาแนบสลิปโอนเงินก่อนทำรายการครับ');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('slip', slipInput.files[0]);
+      formData.append('amount', modeType === 'topup' ? currentAmount : (finalPayablePrice - userCredit));
+
+      try {
+        document.getElementById('submitBtnText').innerText = 'กำลังตรวจสอบสลิป...';
+
+        const response = await fetch('http://localhost:3000/api/verify-slip', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          processOrderLocally(user, users, buyerNameInput, modeType === 'topup' ? currentAmount : (finalPayablePrice - userCredit), 'พร้อมเพย์ (ตรวจสอบสลิปแล้ว)');
+        } else {
+          alert('ตรวจสอบสลิปไม่ผ่าน: ' + (result.message || 'กรุณาตรวจสอบความถูกต้องของสลิป'));
+          document.getElementById('submitBtnText').innerText = modeType === 'topup' ? 'ยืนยันการเติมเงินและแจ้งสลิป' : 'ยืนยันชำระเงินและแจ้งสลิป';
+        }
+      } catch (error) {
+        console.error('Connection error:', error);
+        alert('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ตรวจสอบสลิปได้ กรุณาตรวจสอบว่ารัน Server ไว้หรือไม่');
+        document.getElementById('submitBtnText').innerText = modeType === 'topup' ? 'ยืนยันการเติมเงินและแจ้งสลิป' : 'ยืนยันชำระเงินและแจ้งสลิป';
+      }
+    }
+
+    function processOrderLocally(user, users, buyerNameInput, paidAmount, selectedChannelName) {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      document.getElementById('recAddedRow').style.display = 'none';
+      document.getElementById('recUserCreditRow').style.display = 'flex';
+
+      if (modeType === 'buy_credit') {
+        const oldCredit = userCredit;
+        const newCredit = Number(user.credit) - finalPayablePrice;
+        user.credit = newCredit;
+        
+        if (!user.orderHistory) user.orderHistory = [];
+        user.orderHistory.unshift({
+          id: 'ORD-' + Math.floor(10000 + Math.random() * 90000),
+          title: globalProductName,
+          price: finalPayablePrice,
+          category: globalCategory,
+          date: dateStr,
+          credentials: 'Username: game_user_' + Math.floor(100 + Math.random() * 900) + ' | Password: SecurePass!'
+        });
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        users = users.map(u => {
+          if (u.email === user.email) {
+            u.credit = user.credit;
+            u.orderHistory = user.orderHistory;
+          }
+          return u;
+        });
+        localStorage.setItem('users', JSON.stringify(users));
+
+        document.getElementById('modalTitle').innerText = 'ใบเสร็จรับเงิน / ใบยืนยันคำสั่งซื้อ';
+        document.getElementById('receiptDate').innerText = 'วันที่ทำรายการ: ' + dateStr;
+        document.getElementById('recBuyerName').innerText = buyerNameInput;
+        document.getElementById('recProductName').innerText = globalProductName;
+        document.getElementById('recProductId').innerText = globalProductId;
+        document.getElementById('recCategory').innerText = globalCategory;
+        document.getElementById('recUserCredit').innerText = '฿' + oldCredit.toLocaleString();
+        document.getElementById('recPriceLabel').innerText = 'ราคาสินค้า:';
+        document.getElementById('recPrice').innerText = '฿' + productPrice.toLocaleString();
+        document.getElementById('recRemaining').innerText = '฿' + newCredit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('recStatusText').innerText = 'ชำระสำเร็จ (หักเครดิต)';
+
+      } else if (modeType === 'topup') {
+        user.credit = (Number(user.credit) || 0) + currentAmount;
+
+        if (!user.topupHistory) user.topupHistory = [];
+        user.topupHistory.unshift({
+          id: 'TXN-' + Math.floor(100000 + Math.random() * 900000),
+          channel: selectedChannelName,
+          amount: currentAmount,
+          date: dateStr,
+          status: 'success'
+        });
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        users = users.map(u => {
+          if (u.email === user.email) {
+            u.credit = user.credit;
+            u.topupHistory = user.topupHistory;
+          }
+          return u;
+        });
+        localStorage.setItem('users', JSON.stringify(users));
+
+        document.getElementById('modalTitle').innerText = 'เติมเงินสำเร็จ!';
+        document.getElementById('receiptDate').innerText = 'วันที่: ' + dateStr;
+        document.getElementById('recBuyerName').innerText = buyerNameInput || user.username || 'ลูกค้าทั่วไป';
+        document.getElementById('recProductName').innerText = 'เติมเงินเข้าบัญชี (Topup)';
+        document.getElementById('recProductId').innerText = '-';
+        document.getElementById('recCategory').innerText = 'Topup System';
+        document.getElementById('recUserCredit').innerText = '฿' + (user.credit - currentAmount).toLocaleString();
+        document.getElementById('recPriceLabel').innerText = 'จำนวนเงินเติม:';
+        document.getElementById('recPrice').innerText = '฿' + currentAmount.toLocaleString();
+        document.getElementById('recRemaining').innerText = '฿' + Number(user.credit).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('recStatusText').innerText = 'เติมเงินสำเร็จ';
+      } else {
+        const missingAmount = finalPayablePrice - userCredit;
+        const finalRemaining = 0; 
+        
+        user.credit = finalRemaining;
+
+        if (!user.orderHistory) user.orderHistory = [];
+        user.orderHistory.unshift({
+          id: 'ORD-' + Math.floor(10000 + Math.random() * 90000),
+          title: globalProductName,
+          price: finalPayablePrice,
+          category: globalCategory,
+          date: dateStr,
+          credentials: 'Username: game_user_' + Math.floor(100 + Math.random() * 900) + ' | Password: SecurePass!'
+        });
+
+        if (!user.topupHistory) user.topupHistory = [];
+        user.topupHistory.unshift({
+          id: 'TXN-' + Math.floor(100000 + Math.random() * 900000),
+          channel: selectedChannelName,
+          amount: missingAmount,
+          date: dateStr,
+          status: 'success'
+        });
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        users = users.map(u => {
+          if (u.email === user.email) {
+            u.credit = user.credit;
+            u.orderHistory = user.orderHistory;
+            u.topupHistory = user.topupHistory;
+          }
+          return u;
+        });
+        localStorage.setItem('users', JSON.stringify(users));
+
+        document.getElementById('modalTitle').innerText = 'ใบเสร็จรับเงิน / ใบยืนยันคำสั่งซื้อ';
+        document.getElementById('receiptDate').innerText = 'วันที่: ' + dateStr;
+        document.getElementById('recBuyerName').innerText = buyerNameInput;
+        document.getElementById('recProductName').innerText = globalProductName;
+        document.getElementById('recProductId').innerText = globalProductId;
+        document.getElementById('recCategory').innerText = globalCategory;
+
+        if (userCredit > 0) {
+          document.getElementById('recUserCredit').innerText = '฿' + userCredit.toLocaleString();
+          document.getElementById('recPriceLabel').innerText = 'ราคาสินค้า:';
+          document.getElementById('recPrice').innerText = '฿' + productPrice.toLocaleString();
+          document.getElementById('recAddedAmount').innerText = '฿' + missingAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+          document.getElementById('recAddedRow').style.display = 'flex';
+          document.getElementById('recRemaining').innerText = '฿' + finalRemaining.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (หักครบพอดี)';
+          document.getElementById('recStatusText').innerText = 'ชำระสำเร็จ (เติมเงินส่วนต่าง + หักเครดิต)';
+        } else {
+          document.getElementById('recUserCreditRow').style.display = 'none';
+          document.getElementById('recPriceLabel').innerText = 'ราคาสินค้า:';
+          document.getElementById('recPrice').innerText = '฿' + productPrice.toLocaleString();
+          document.getElementById('recAddedAmount').innerText = '฿' + missingAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+          document.getElementById('recAddedRow').style.display = 'flex';
+          document.getElementById('recAddedRow').querySelector('span:first-child').innerText = 'ยอดโอนชำระ (สลิป):';
+          document.getElementById('recRemaining').innerText = '฿0.00 (ชำระส่วนต่างครบถ้วน)';
+          document.getElementById('recStatusText').innerText = 'ชำระสำเร็จ (ผ่านการโอนเงิน/สลิป)';
+        }
+      }
+
+      document.getElementById('successModal').classList.add('active');
+    }
+
+    function downloadReceiptImage() {
+      const receiptElement = document.getElementById('receiptCardBox');
+      html2canvas(receiptElement, { scale: 2, backgroundColor: '#161b22' }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'gamemarket-receipt.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>

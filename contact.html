@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ติดต่อเรา — GameMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { 
+      --bg-color: #0b0f19; 
+      --card-bg: #131824; 
+      --border-color: #212a3d; 
+      --text-main: #f0f6fc; 
+      --text-muted: #8b949e; 
+      --primary: #d93838; 
+      --primary-hover: #c02e2e;
+      --success: #2ea043;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      background-color: var(--bg-color); 
+      color: var(--text-main); 
+      font-family: 'Prompt', sans-serif; 
+      line-height: 1.6; 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    a { color: inherit; text-decoration: none; }
+    
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+
+    /* Header & Nav */
+    .navbar { background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
+    .navbar-container { display: flex; align-items: center; justify-content: space-between; height: 75px; max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    .brand { display: flex; align-items: center; gap: 12px; transition: transform 0.2s ease; }
+    .brand:hover { transform: scale(1.02); }
+    .logo { background: linear-gradient(135deg, var(--primary), #ff6b6b); color: #fff; font-weight: 700; padding: 6px 14px; border-radius: 8px; box-shadow: 0 0 15px rgba(217, 56, 56, 0.4); }
+    .brand-name b { font-size: 1.1rem; display: block; line-height: 1.2; }
+    .brand-name small { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; }
+    
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; transition: color 0.2s ease; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-main); font-weight: 600; }
+    
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+
+    /* Hamburger Menu Button */
+    .menu-toggle-btn {
+      display: none; background: transparent; border: 1px solid var(--border-color);
+      color: var(--text-main); font-size: 1.2rem; width: 40px; height: 40px; border-radius: 10px; 
+      align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
+    }
+    .menu-toggle-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    .btn { 
+      display: inline-flex; align-items: center; justify-content: center; 
+      padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; 
+      cursor: pointer; border: none; transition: all 0.25s ease; 
+    }
+    .btn.primary, .btn.red { background: var(--primary); color: #fff; }
+    .btn.primary:hover, .btn.red:hover { background: var(--primary-hover); }
+    .btn.ghost { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+
+    /* User Menu */
+    .user-menu-container { position: relative; }
+    .user-btn {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg-color); border: 1px solid var(--border-color);
+      padding: 6px 14px; border-radius: 30px; cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .user-btn:hover { border-color: var(--primary); }
+    .avatar { 
+      width: 32px; height: 32px; border-radius: 50%; background: var(--primary); 
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: #fff;
+    }
+    .dropdown-menu {
+      position: absolute; right: 0; top: 55px; width: 240px;
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 14px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      display: none; flex-direction: column; overflow: hidden; z-index: 200;
+    }
+    .dropdown-menu.show { display: flex; }
+    .dropdown-header { padding: 15px; border-bottom: 1px solid var(--border-color); text-align: left; }
+    .credit-badge { 
+      background: rgba(217, 56, 56, 0.15); color: var(--primary); font-size: 0.75rem; 
+      padding: 4px 10px; border-radius: 6px; margin-top: 6px; display: inline-block; font-weight: 600;
+    }
+    .dropdown-item {
+      padding: 10px 15px; font-size: 0.85rem; color: var(--text-muted); 
+      display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; text-align: left;
+    }
+    .dropdown-item:hover { background: rgba(100,100,100,0.08); color: var(--text-main); }
+    .btn-logout {
+      margin: 10px 15px 15px; background: var(--primary); color: #fff; text-align: center; 
+      padding: 9px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer;
+    }
+    .btn-logout:hover { background: var(--primary-hover); }
+
+    /* Mobile Nav Overlay & Drawer */
+    .mobile-nav-overlay {
+      position: fixed; top: 75px; left: 0; width: 100%; height: calc(100vh - 75px);
+      background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+      display: none; z-index: 98; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .mobile-nav-overlay.show { display: block; opacity: 1; }
+    
+    .mobile-nav-drawer {
+      position: fixed; top: 75px; left: -100%; width: 80%; max-width: 300px; height: calc(100vh - 75px);
+      background: var(--card-bg); border-right: 1px solid var(--border-color); padding: 25px 20px;
+      display: flex; flex-direction: column; gap: 12px; z-index: 99; transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    }
+    .mobile-nav-drawer.show { left: 0; }
+    .mobile-nav-drawer a {
+      color: var(--text-muted); font-size: 1rem; font-weight: 500; padding: 12px 16px; border-radius: 10px;
+      background: var(--bg-color); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;
+    }
+    .mobile-nav-drawer a.active, .mobile-nav-drawer a:hover { color: var(--text-main); border-color: var(--primary); background: rgba(217, 56, 56, 0.08); }
+
+    /* Custom Modal */
+    .custom-modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .custom-modal {
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      width: 100%; max-width: 380px; padding: 25px; border-radius: 16px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5); text-align: center;
+      transform: translateY(20px) scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .custom-modal-overlay.active .custom-modal { transform: translateY(0) scale(1); }
+    .custom-modal-icon { font-size: 2.5rem; margin-bottom: 15px; }
+    .custom-modal h3 { font-size: 1.2rem; margin-bottom: 8px; color: var(--text-main); font-weight: 600; }
+    .custom-modal p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; }
+    .custom-modal-buttons { display: flex; gap: 10px; }
+    .custom-modal-btn {
+      flex: 1; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;
+    }
+    .btn-cancel-modal { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-confirm-modal { background: var(--primary); color: #fff; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 30px; right: 20px; background: #2ea043; color: #fff;
+      padding: 12px 20px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 10000;
+      transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* Contact Content */
+    .main-content { padding: 30px 0 60px; flex: 1; }
+    .page-header { text-align: center; margin-bottom: 30px; }
+    .page-header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+    .page-header h1 span { color: var(--primary); }
+    .page-header p { color: var(--text-muted); font-size: 0.85rem; max-width: 600px; margin: 0 auto; line-height: 1.5; padding: 0 10px; }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      max-width: 440px; /* ลดความกว้างสูงสุดบนมือถือไม่ให้ชิดขอบจอเกินไป */
+      width: 90%;       /* กำหนดความกว้างแบบเว้นขอบซ้ายขวา */
+      margin: 0 auto 35px;
+      gap: 18px;
+    }
+
+    .contact-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+      transition: 0.3s;
+    }
+    .contact-card:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(0,0,0,0.4); border-color: var(--primary); }
+
+    .card-fb::before { background: #1877f2; }
+    .card-dc::before { background: #5865f2; }
+    .card-msg::before { background: linear-gradient(135deg, #00c6ff, #0072ff); }
+
+    .contact-icon-box {
+      width: 52px; height: 52px; margin: 0 auto 12px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-fb .contact-icon-box { background: rgba(24, 119, 242, 0.15); color: #1877f2; }
+    .card-dc .contact-icon-box { background: rgba(88, 101, 242, 0.15); color: #5865f2; }
+    .card-msg .contact-icon-box { background: rgba(0, 132, 255, 0.15); color: #0084ff; }
+    
+    .contact-icon-box svg { width: 26px; height: 26px; fill: currentColor; }
+
+    .contact-card h3 { font-size: 1.1rem; margin-bottom: 8px; font-weight: 700; }
+    .contact-card p { color: var(--text-muted); font-size: 0.82rem; margin-bottom: 20px; flex-grow: 1; line-height: 1.5; }
+    
+    .button-group { display: flex; gap: 8px; justify-content: center; }
+    .contact-action-btn {
+      flex: 1; padding: 10px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 600;
+      border: none; cursor: pointer; font-family: inherit; transition: 0.2s; display: inline-flex;
+      align-items: center; justify-content: center; gap: 6px; text-decoration: none; color: #fff;
+    }
+    .card-fb .contact-action-btn.btn-theme { background: #1877f2; }
+    .card-fb .contact-action-btn.btn-theme:hover { background: #145dbf; }
+    .card-dc .contact-action-btn.btn-theme { background: #5865f2; }
+    .card-dc .contact-action-btn.btn-theme:hover { background: #4752c4; }
+    .card-msg .contact-action-btn.btn-theme { background: linear-gradient(135deg, #00c6ff, #0072ff); }
+    .card-msg .contact-action-btn.btn-theme:hover { opacity: 0.9; }
+
+    .btn-copy {
+      background: rgba(255, 255, 255, 0.05); color: var(--text-main);
+      border: 1px solid var(--border-color); flex: 0.3;
+    }
+    .btn-copy:hover { background: rgba(255, 255, 255, 0.12); }
+
+    /* FAQ Box ให้สอดคล้องกับความกว้างใหม่ */
+    .faq-box {
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 16px; padding: 22px 18px; max-width: 440px; width: 90%; margin: 0 auto;
+    }
+    .faq-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .faq-item { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border-color); }
+    .faq-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .faq-question { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; color: var(--text-main); }
+    .faq-answer { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+
+    footer { 
+      background: var(--card-bg); border-top: 1px solid var(--border-color); 
+      padding: 22px 20px; color: var(--text-muted); font-size: 0.8rem; 
+      margin-top: auto; 
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;
+    }
+
+    @media (min-width: 768px) {
+      .contact-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 1200px;
+        width: 100%;
+      }
+      .faq-box {
+        max-width: 1200px;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .menu-toggle-btn { display: flex; }
+      .footer-inner { flex-direction: column; gap: 10px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toast" id="copyToast">📋 คัดลอกลิงก์สำเร็จแล้ว!</div>
+
+  <div class="custom-modal-overlay" id="customModalOverlay">
+    <div class="custom-modal">
+      <div class="custom-modal-icon" id="modalIcon">⚠️</div>
+      <h3 id="modalTitle">ยืนยันการออกจากระบบ</h3>
+      <p id="modalDesc">คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?</p>
+      <div class="custom-modal-buttons" id="modalButtons">
+        <button class="custom-modal-btn btn-cancel-modal" onclick="closeCustomModal()">ยกเลิก</button>
+        <button class="custom-modal-btn btn-confirm-modal" id="modalConfirmBtn">ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="navbar">
+    <div class="navbar-container">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="menu-toggle-btn" onclick="toggleMobileMenu()">☰</button>
+        <a class="brand" href="index.html">
+          <div class="logo">GM</div>
+          <div class="brand-name"><b>GameMarket</b><small>ACCOUNT STORE</small></div>
+        </a>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">หน้าหลัก</a>
+        <a href="games.html">สินค้าทั้งหมด</a>
+        <a href="how-to-buy.html">วิธีการซื้อ</a>
+        <a class="active" href="contact.html">ติดต่อเรา</a>
+      </nav>
+      <div class="nav-actions">
+        <!-- สถานะ 1: ยังไม่ได้เข้าสู่ระบบ -->
+        <div id="loggedOutState" style="display: flex; gap: 10px;">
+          <a class="btn ghost" href="login.html">เข้าสู่ระบบ</a>
+          <a class="btn red" href="register.html">สมัครสมาชิก</a>
+        </div>
+
+        <!-- สถานะ 2: เข้าสู่ระบบแล้ว -->
+        <div class="user-menu-container" id="loggedInState" style="display: none;">
+          <div class="user-btn" onclick="toggleMenu()">
+            <div class="avatar" id="userAvatar">U</div>
+            <div style="text-align: left;">
+              <div style="font-size: 0.85rem; font-weight: 600; color: #fff;" id="userNameDisplay">Player01</div>
+              <div style="font-size: 0.7rem; color: #4ade80; font-weight: 500;" id="userCreditDisplay">0.00 ฿</div>
+            </div>
+          </div>
+
+          <!-- Dropdown Profile -->
+          <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-header">
+              <div style="font-weight: 600; color: #fff;" id="dropdownUserName">Player01</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);" id="dropdownUserEmail">player01@example.com</div>
+              <div class="credit-badge" id="dropdownUserCreditBadge">เครดิต: 0.00 ฿</div>
+            </div>
+            <a href="profile.html" class="dropdown-item">👤 โปรไฟล์</a>
+            <a href="topup.html" class="dropdown-item">💳 เติมเงิน</a>
+            <a href="topup-history.html" class="dropdown-item">💰 ประวัติการเติมเงิน</a>
+            <a href="order-history.html" class="dropdown-item">📦 ประวัติการซื้อของ</a>
+            <button class="btn-logout" onclick="logout()">ออกจากระบบ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Drawer & Backdrop -->
+  <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileMenu()"></div>
+  <div class="mobile-nav-drawer" id="mobileNavDrawer">
+    <a href="index.html">🏠 หน้าหลัก</a>
+    <a href="games.html">🎮 สินค้าทั้งหมด</a>
+    <a href="how-to-buy.html">📖 วิธีการซื้อ</a>
+    <a class="active" href="contact.html">📞 ติดต่อเรา</a>
+  </div>
+
+  <main class="container main-content">
+    <div class="page-header">
+      <span style="color: var(--primary); font-size: 0.75rem; font-weight: 600; letter-spacing: 1px;">SUPPORT</span>
+      <h1>ช่องทางการ <span>ติดต่อเรา</span></h1>
+      <p>มีปัญหาเรื่องการใช้งาน เติมเงินไม่เข้า หรือต้องการแจ้งปัญหา ติดต่อทีมงานได้ตลอด 24 ชั่วโมง</p>
+    </div>
+
+    <div class="contact-grid">
+      <!-- 1. Facebook Fanpage -->
+      <div class="contact-card card-fb">
+        <div>
+          <div class="contact-icon-box">
+            <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+          <h3>Facebook Fanpage</h3>
+          <p>สอบถามข้อมูล แจ้งปัญหา หรือติดตามโปรโมชั่นผ่านเพจหลักอย่างเป็นทางการ</p>
+        </div>
+        <div class="button-group">
+          <a href="https://www.facebook.com/jridiffm/?locale=th_TH" class="contact-action-btn btn-theme" target="_blank">ทักแชทเพจ</a>
+          <button class="contact-action-btn btn-copy" onclick="copyLink('https://www.facebook.com/jridiffm/?locale=th_TH')" title="คัดลอกลิงก์">🔗</button>
+        </div>
+      </div>
+
+      <!-- 2. Discord Community -->
+      <div class="contact-card card-dc">
+        <div>
+          <div class="contact-icon-box">
+            <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          </div>
+          <h3>Discord Community</h3>
+          <p>พูดคุยกับเพื่อนๆ ชาวเกมเมอร์ แลกเปลี่ยนความรู้ และแจ้งเคสด่วนกับแอดมิน</p>
+        </div>
+        <div class="button-group">
+          <a href="https://discord.gg/hH88xw6wq" class="contact-action-btn btn-theme" target="_blank">เข้าร่วมดิสคอร์ด</a>
+          <button class="contact-action-btn btn-copy" onclick="copyLink('https://discord.gg/hH88xw6wq')" title="คัดลอกลิงก์">🔗</button>
+        </div>
+      </div>
+
+      <!-- 3. Messenger Chat -->
+      <div class="contact-card card-msg">
+        <div>
+          <div class="contact-icon-box">
+            <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 4.974 0 11.111c0 3.497 1.745 6.616 4.472 8.652V24l4.085-2.242c1.05.291 2.164.446 3.443.446 6.627 0 12-4.974 12-11.111C24 4.974 18.627 0 12 0zm1.191 14.963l-3.055-3.262-5.963 3.262 6.559-6.963 3.13 3.262 5.888-3.262-6.559 6.963z"/></svg>
+          </div>
+          <h3>Messenger Chat</h3>
+          <p>ส่งข้อความแชทตรงถึงแอดมินผ่านกล่องข้อความส่วนตัวเพื่อความรวดเร็วทันใจ</p>
+        </div>
+        <div class="button-group">
+          <a href="https://www.facebook.com/jridiffm/?locale=th_TH" class="contact-action-btn btn-theme" target="_blank">เปิดแชท Messenger</a>
+          <button class="contact-action-btn btn-copy" onclick="copyLink('https://www.facebook.com/jridiffm/?locale=th_TH')" title="คัดลอกลิงก์">🔗</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-box">
+      <div class="faq-title">❓ คำถามที่พบบ่อย (FAQ)</div>
+      
+      <div class="faq-item">
+        <div class="faq-question">ซื้อไอดีเกมแล้วจะได้รับสินค้าช่องทางไหน?</div>
+        <div class="faq-answer">ระบบจะจัดส่งข้อมูลไอดีและรหัสผ่านให้ท่านอัตโนมัติทันทีผ่านทางหน้าประวัติการซื้อของและทางหน้าจอหลังชำระเงินสำเร็จ</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">เติมเงินแล้วเครดิตไม่เข้าต้องทำอย่างไร?</div>
+        <div class="faq-answer">สามารถถ่ายสลิปหลักฐานการโอนเงิน พร้อมแจ้ง User หรือ Email ของท่านเข้ามาทาง Facebook Fanpage หรือ Messenger เพื่อให้แอดมินตรวจสอบและเติมเครดิตให้ภายใน 5 นาที</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">ไอดีเกมมีความปลอดภัยแค่ไหน มีประกันไหม?</div>
+        <div class="faq-answer">ไอดีทุกไอดีในร้านผ่านการคัดกรองอย่างดี มีการรับประกันความปลอดภัยตามเงื่อนไขของแต่ละเกม หากมีปัญหาสามารถติดต่อทีมงานเพื่อช่วยเหลือได้ทันที</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <b>GameMarket</b>
+      <span>© 2026 GameMarket Demo. All rights reserved.</span>
+      <a href="index.html">หน้าหลัก</a>
+    </div>
+  </footer>
+
+  <script>
+    function copyLink(url) {
+      navigator.clipboard.writeText(url).then(() => {
+        const toast = document.getElementById('copyToast');
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2500);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+    }
+
+    function checkAuthStatus() {
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+      const loggedInState = document.getElementById('loggedInState');
+      const loggedOutState = document.getElementById('loggedOutState');
+
+      if (isLoggedIn) {
+        if (loggedInState) loggedInState.style.display = 'block';
+        if (loggedOutState) loggedOutState.style.display = 'none';
+
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser) {
+          if (currentUser.username) {
+            document.getElementById('userNameDisplay').innerText = currentUser.username;
+            document.getElementById('dropdownUserName').innerText = currentUser.username;
+            document.getElementById('userAvatar').innerText = currentUser.username.charAt(0).toUpperCase();
+          }
+          if (currentUser.email) {
+            document.getElementById('dropdownUserEmail').innerText = currentUser.email;
+          }
+        }
+      } else {
+        if (loggedInState) loggedInState.style.display = 'none';
+        if (loggedOutState) loggedOutState.style.display = 'flex';
+      }
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById('dropdownMenu');
+      if (menu) menu.classList.toggle('show');
+    }
+
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobileNavDrawer');
+      const overlay = document.getElementById('mobileNavOverlay');
+      if (drawer && overlay) {
+        drawer.classList.toggle('show');
+        overlay.classList.toggle('show');
+      }
+    }
+
+    function logout() {
+      const overlay = document.getElementById('customModalOverlay');
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDesc = document.getElementById('modalDesc');
+      const modalButtons = document.getElementById('modalButtons');
+
+      modalIcon.innerText = "⚠️";
+      modalTitle.innerText = "ยืนยันการออกจากระบบ";
+      modalDesc.innerText = "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบจากบัญชีนี้?";
+      
+      modalButtons.innerHTML = `
+        <button class="custom-modal-btn btn-cancel-modal" onclick="closeCustomModal()">ยกเลิก</button>
+        <button class="custom-modal-btn btn-confirm-modal" onclick="executeLogout()">ออกจากระบบ</button>
+      `;
+
+      overlay.classList.add('active');
+    }
+
+    function executeLogout() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('currentUser');
+
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDesc = document.getElementById('modalDesc');
+      const modalButtons = document.getElementById('modalButtons');
+
+      modalIcon.innerText = "✅";
+      modalTitle.innerText = "สำเร็จ";
+      modalDesc.innerText = "ออกจากระบบเรียบร้อยแล้ว";
+      modalButtons.innerHTML = `<button class="custom-modal-btn btn-confirm-modal" onclick="window.location.href='index.html'">ตกลง</button>`;
+    }
+
+    function closeCustomModal() {
+      const overlay = document.getElementById('customModalOverlay');
+      overlay.classList.remove('active');
+    }
+
+    window.onclick = function(event) {
+      if (!event.target.closest('.user-menu-container')) {
+        const menu = document.getElementById('dropdownMenu');
+        if (menu && menu.classList.contains('show')) {
+          menu.classList.remove('show');
+        }
+      }
+    }
+
+    function syncUserData() {
+      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser) {
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let foundUser = users.find(u => u.email === currentUser.email);
+        if (foundUser) {
+          currentUser.credit = foundUser.credit;
+          localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
+
+        const creditStr = Number(currentUser.credit || 0).toFixed(2) + ' ฿';
+        
+        const creditDisplay = document.getElementById('userCreditDisplay');
+        if (creditDisplay) creditDisplay.innerText = creditStr;
+
+        const creditBadge = document.getElementById('dropdownUserCreditBadge');
+        if (creditBadge) creditBadge.innerText = `เครดิต: ${creditStr}`;
+      }
+    }
+
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'currentUser') {
+        syncUserData();
+      }
+    });
+
+    checkAuthStatus();
+    syncUserData();
+  </script>
+</body>
+</html>

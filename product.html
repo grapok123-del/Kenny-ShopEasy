@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>รายละเอียดสินค้า — GameMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: #131824;
+      --border-color: #212a3d;
+      --border-soft: rgba(139, 148, 158, 0.12);
+      --text-main: #f0f6fc;
+      --text-muted: #8b949e;
+      --primary: #d93838;
+      --primary-hover: #c02e2e;
+      --success: #2ea043;
+      --info: #38bdf8;
+      --warning: #f59e0b;
+      --gold: #ffd700;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: radial-gradient(circle at 15% 0%, rgba(217, 56, 56, 0.07), transparent 30%), radial-gradient(circle at 85% 10%, rgba(56, 189, 248, 0.05), transparent 28%), var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Prompt', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1180px; margin: 0 auto; padding: 34px 22px 60px; }
+    .navbar { background: rgba(19, 24, 36, 0.94); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(14px); }
+    .navbar-container { display: flex; align-items: center; justify-content: space-between; min-height: 75px; max-width: 1240px; margin: 0 auto; padding: 0 22px; gap: 22px; }
+    .brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; transition: transform 0.2s ease; }
+    .brand:hover { transform: scale(1.02); }
+    .logo { background: linear-gradient(135deg, var(--primary), #ff6b6b); color: #fff; font-weight: 700; padding: 6px 14px; border-radius: 8px; box-shadow: 0 0 15px rgba(217, 56, 56, 0.4); }
+    .brand-name b { font-size: 1.1rem; display: block; line-height: 1.2; }
+    .brand-name small { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; transition: color .2s ease; white-space: nowrap; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-main); }
+    .nav-actions { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 11px 18px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: none; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); width: 100%; font-family: inherit; }
+    .btn:active { transform: scale(0.96) !important; }
+    .btn.primary { background: var(--primary); color: #fff; box-shadow: 0 4px 15px rgba(217, 56, 56, 0.3); }
+    .btn.primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(217, 56, 56, 0.45); }
+    .btn.secondary { background: #1a2333; color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn.secondary:hover { border-color: var(--info); color: var(--info); transform: translateY(-2px); background: rgba(56,189,248,0.05); }
+    .btn-auth { padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; }
+    .btn-login { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-login:hover { border-color: var(--text-main); }
+    .btn-reg { background: var(--primary); color: #fff; border: none; }
+    .btn-reg:hover { background: var(--primary-hover); }
+    .user-menu-container { position: relative; }
+    .user-btn { display: flex; align-items: center; gap: 10px; background: #1a2333; border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 30px; cursor: pointer; transition: all 0.25s ease; }
+    .user-btn:hover { border-color: var(--primary); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .avatar-sm { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: #fff; }
+    .dropdown-menu { position: absolute; right: 0; top: 55px; width: 240px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; box-shadow: 0 20px 40px rgba(0,0,0,.75); display: none; flex-direction: column; overflow: hidden; z-index: 200; opacity: 0; transform: translateY(-10px); transition: opacity 0.25s ease, transform 0.25s ease; }
+    .dropdown-menu.show { display: flex; opacity: 1; transform: translateY(0); }
+    .dropdown-header { padding: 15px; border-bottom: 1px solid var(--border-color); text-align: left; }
+    .credit-badge { background: rgba(217, 56, 56, .15); color: var(--primary); font-size: .75rem; padding: 4px 10px; border-radius: 6px; margin-top: 6px; display: inline-block; font-weight: 600; }
+    .dropdown-item { padding: 10px 15px; font-size: .85rem; color: var(--text-muted); display: flex; align-items: center; gap: 10px; text-align: left; transition: all 0.2s ease; }
+    .dropdown-item:hover { background: #1a2333; color: var(--text-main); padding-left: 18px; }
+    .btn-logout { margin: 10px 15px 15px; background: var(--primary); color: #fff; text-align: center; padding: 9px; border-radius: 8px; font-weight: 600; font-size: .85rem; border: none; cursor: pointer; font-family: inherit; transition: all 0.2s ease; }
+    .btn-logout:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(217,56,56,0.3); }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: .9rem; margin-bottom: 18px; padding: 6px 10px; border-radius: 8px; transition: all .2s ease; }
+    .back-link:hover { color: #fff; background: rgba(139,148,158,.08); }
+    .product-detail-grid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(360px, .92fr); gap: 34px; background: var(--card-bg); border: 1px solid var(--border-color); padding: 28px; border-radius: 18px; box-shadow: 0 18px 55px rgba(0,0,0,.42); align-items: stretch; }
+    .gallery-main { width: 100%; height: 365px; background: #0b0f19; border-radius: 14px; overflow: hidden; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .gallery-main img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+    .gallery-main img:hover { transform: scale(1.02); }
+    .gallery-thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
+    .thumb-item { height: 86px; background: #0b0f19; border-radius: 10px; border: 2px solid var(--border-color); overflow: hidden; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s ease; }
+    .thumb-item:hover { transform: translateY(-2px); border-color: #8b949e; }
+    .thumb-item.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(217,56,56,.2); }
+    .video-section-title { font-size: .95rem; font-weight: 600; margin-bottom: 9px; display: flex; align-items: center; gap: 7px; }
+    .video-container { width: 100%; height: 220px; background: #0b0f19; border-radius: 14px; overflow: hidden; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; }
+    .video-container video { width: 100%; height: 100%; object-fit: cover; }
+    .product-header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 13px; }
+    .product-tag { background: rgba(217,56,56,.15); color: var(--primary); font-size: .75rem; font-weight: 700; padding: 5px 11px; border-radius: 7px; text-transform: uppercase; }
+    .product-status-badge { font-size: .75rem; font-weight: 600; color: var(--success); background: rgba(46,197,94,.1); border: 1px solid rgba(46,197,94,.2); padding: 5px 10px; border-radius: 7px; white-space: nowrap; }
+    .product-title { font-size: clamp(1.55rem, 2.3vw, 2rem); font-weight: 700; line-height: 1.25; margin-bottom: 7px; color: #fff; }
+    .product-price { font-size: 2.15rem; font-weight: 700; line-height: 1.2; color: var(--success); margin-bottom: 18px; }
+    .product-meta { font-size: .9rem; color: var(--text-muted); margin-bottom: 18px; display: flex; flex-direction: column; gap: 7px; padding: 12px 14px; background: #1a2333; border: 1px solid var(--border-soft); border-radius: 10px; }
+    .sub-title-highlight { font-size: 1rem; font-weight: 600; color: var(--text-main); }
+    .security-box { background: linear-gradient(135deg, rgba(46,197,94,.1), rgba(46,197,94,.03)); border: 1px solid rgba(46,197,94,.25); padding: 12px 14px; border-radius: 10px; font-size: .85rem; color: var(--success); margin-bottom: 21px; display: flex; align-items: flex-start; gap: 10px; }
+    .divider { border: none; border-top: 1px solid var(--border-color); margin: 21px 0; }
+    .section-heading { font-size: 1rem; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .section-heading::before { content: ""; width: 4px; height: 18px; border-radius: 99px; background: var(--primary); }
+    .description-box { background: #1a2333; border: 1px solid var(--border-color); padding: 15px 16px; border-radius: 10px; font-size: .88rem; color: var(--text-muted); line-height: 1.75; margin-bottom: 19px; white-space: pre-line; }
+    .support-buttons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .btn-support { background: #1a2333; border: 1px solid var(--border-color); color: var(--text-main); min-height: 45px; padding: 10px 12px; border-radius: 10px; font-size: .8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; text-align: center; transition: all .2s ease; font-family: inherit; }
+    .btn-support:hover { border-color: var(--info); color: var(--info); background: rgba(56,189,248,.05); }
+    .btn-support.warning:hover { border-color: var(--warning); color: var(--warning); background: rgba(245,158,11,.05); }
+    .action-group { display: flex; flex-direction: column; gap: 9px; }
+
+    /* ปรับแต่ง Modal ให้สมูทและพรีเมียมขึ้น ไม่มีกรอบซ้อนทับน่ากลัว */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0); backdrop-filter: blur(0px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1), backdrop-filter 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .modal-overlay.show { display: flex; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); }
+    .modal-box { background: var(--card-bg); border: 1px solid var(--border-color); width: 90%; max-width: 420px; padding: 30px 24px; border-radius: 20px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.6); opacity: 0; transform: scale(0.9) translateY(15px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .modal-overlay.show .modal-box { opacity: 1; transform: scale(1) translateY(0); }
+    
+    .modal-icon-wrapper { width: 60px; height: 60px; border-radius: 50%; background: rgba(217, 56, 56, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 16px; border: 1px solid rgba(217, 56, 56, 0.2); }
+    .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
+    .modal-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+    
+    .qr-container { background: #fff; padding: 15px; border-radius: 12px; display: inline-block; margin-bottom: 15px; }
+    .qr-container img { width: 150px; height: 150px; display: block; }
+    .share-link-input { width: 100%; background: #1a2333; border: 1px solid var(--border-color); color: var(--text-muted); padding: 10px; border-radius: 8px; font-size: .85rem; margin-bottom: 15px; text-align: center; outline: none; }
+    .modal-close { background: #1a2333; color: var(--text-main); border: 1px solid var(--border-color); padding: 11px; border-radius: 10px; font-weight: 600; width: 100%; cursor: pointer; font-family: inherit; transition: all 0.2s ease; }
+    .modal-close:hover { background: #223049; border-color: #8b949e; }
+    @media (max-width: 980px) {
+      .navbar-container { flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; }
+      .nav-links { order: 3; width: 100%; justify-content: center; overflow-x: auto; padding-bottom: 3px; }
+      .product-detail-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-container">
+      <a class="brand" href="index.html">
+        <div class="logo">GM</div>
+        <div class="brand-name"><b>GameMarket</b><small>ACCOUNT STORE</small></div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">หน้าหลัก</a>
+        <a href="games.html" class="active">สินค้าทั้งหมด</a>
+        <a href="how-to-buy.html">วิธีการซื้อ</a>
+        <a href="contact.html">ติดต่อเรา</a>
+      </nav>
+      <div class="nav-actions" id="navRightAction">
+        <a href="login.html" class="btn-auth btn-login">เข้าสู่ระบบ</a>
+        <a href="register.html" class="btn-auth btn-reg">สมัครสมาชิก</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="games.html">← กลับไปหน้าสินค้าทั้งหมด</a>
+    <div class="product-detail-grid">
+      <div>
+        <div class="gallery-main"><img id="mainImage" src="" alt="Product Image"></div>
+        <div class="gallery-thumbs" id="galleryThumbs"></div>
+        <div class="video-section-title">🎬 วิดีโอรีวิวสินค้า</div>
+        <div class="video-container" id="videoContainer"></div>
+      </div>
+      <div>
+        <div class="product-header-row">
+          <span class="product-tag" id="productCategory">-</span>
+          <span class="product-status-badge">🟢 พร้อมขายทันที</span>
+        </div>
+        <h1 class="product-title" id="productCode">รหัสสินค้า #-</h1>
+        <div class="product-price" id="productPrice">฿0</div>
+        <div class="product-meta">
+          <div><span class="sub-title-highlight" id="productName">-</span></div>
+          <div id="productSubDetail" style="color: var(--text-muted); font-size: 0.9rem;">-</div>
+        </div>
+
+        <div class="security-box">
+          <span>🛡️</span>
+          <div><b>การันตีความปลอดภัย:</b> เปลี่ยนข้อมูลได้ครบทุกอย่าง ป้องกันการดึงคืน 100% (ประกันร้าน 30 วัน)</div>
+        </div>
+        <hr class="divider">
+        <h3 class="section-heading">รายละเอียดสินค้าเชิงลึก</h3>
+        <div class="description-box" id="productDescription">-</div>
+        <div class="support-buttons-grid">
+          <button class="btn-support warning" onclick="openReadBeforeBuy()">📖 อ่านก่อนสั่งซื้อ</button>
+          <a href="contact.html" class="btn-support">💬 ติดต่อผู้ขายสอบถามเพิ่มเติม</a>
+        </div>
+        <div class="action-group" id="actionButtonContainer">
+          <a href="#" id="mainBuyButton" class="btn primary" onclick="handleCheckoutClick(event)">🛒 ยืนยันการสั่งซื้อสินค้า</a>
+          <button class="btn secondary" onclick="openShareModal()">📱 เปิดบนมือถือ / แชร์ลิงก์</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal แจ้งเตือนเข้าสู่ระบบ (ดีไซน์ใหม่ละมุนและสมูทขึ้น) -->
+  <div class="modal-overlay" id="customAlertModal" onclick="checkCloseModal(event, 'customAlertModal')">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-icon-wrapper">🔒</div>
+      <div class="modal-title">กรุณาเข้าสู่ระบบก่อนซื้อสินค้า</div>
+      <div class="modal-desc">
+        เพื่อความปลอดภัย บันทึกข้อมูลคำสั่งซื้อ และรับการดูแลหลังการขายอย่างเต็มรูปแบบ
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <button class="btn primary" onclick="window.location.href='login.html'">เข้าสู่ระบบทันที</button>
+        <button class="modal-close" onclick="closeModals()">ไว้ทีหลัง</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="readBeforeBuyModal" onclick="checkCloseModal(event, 'readBeforeBuyModal')">
+    <div class="modal-box" style="max-width: 480px; text-align: left;" onclick="event.stopPropagation()">
+      <div class="modal-title" style="text-align: center; margin-bottom: 15px;">📖 ข้อตกลงก่อนสั่งซื้อ</div>
+      <div class="modal-desc" style="background: #1a2333; padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+        1. กรุณาตรวจสอบรายละเอียดสินค้าและสเปกให้ครบถ้วนก่อนกดชำระเงิน<br>
+        2. หลังจากชำระเงินเรียบร้อย ระบบจะแสดงข้อมูลสำหรับเข้าใช้งานทันที<br>
+        3. ลูกค้าจะต้องทำการเปลี่ยนรหัสผ่านส่วนตัวทันทีหลังได้รับข้อมูล<br>
+        4. ทางร้านมีประกันความปลอดภัยตามเงื่อนไขของร้าน
+      </div>
+      <button class="modal-close" onclick="closeModals()">เข้าใจและยอมรับ</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="shareModal" onclick="checkCloseModal(event, 'shareModal')">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-title" style="margin-bottom: 15px;">📱 ดูผ่านมือถือ / แชร์ลิงก์</div>
+      <div class="qr-container"><img id="qrCodeImage" src="" alt="QR Code"></div>
+      <input type="text" class="share-link-input" id="shareLinkInput" readonly>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="btn primary" onclick="copyLinkOnly()">📋 คัดลอกลิงก์</button>
+        <button class="modal-close" onclick="closeModals()">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function changeImage(element, src) {
+      document.getElementById('mainImage').src = src;
+      document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
+      element.classList.add('active');
+    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id') || 1;
+    const database = {
+      1: { name: "ไอดีเน้นชุดเป็นหลัก", category: "Free Fire", price: 2499, code: "รหัสสินค้า #FF001", sub: "รายละเอียด: เลเวล 78 ยอดไลค์ 14000+", desc: "- ชื่อไอดี: #GM1001\n- แรงก์: Heroic\n- สกินปืนและแฟชั่นครบถ้วน ปลอดภัย 100%", images: ["images/รูปคลังสินค้าไอดี/id01.png", "images/รูปคลังสินค้าไอดี/id02.png", "images/รูปคลังสินค้าไอดี/id03.png"], video: "https://www.w3schools.com/html/mov_bbb.mp4" },
+      2: { name: "ไอดีเน้นสกินปืนเป็นหลัก", category: "Free Fire", price: 1700, code: "รหัสสินค้า #FF002", sub: "รายละเอียด: เลเวล 72 ยอดไลค์ 10000+", desc: "- ชื่อไอดี: #GM1002\n- แรงก์: Heroic\n- สกินปืนและแฟชั่นครบถ้วน ปลอดภัย 100%", images: ["images/รูปคลังสินค้าไอดี/id04.png", "images/รูปคลังสินค้าไอดี/id05.png", "images/รูปคลังสินค้าไอดี/id06.png"], video: "https://www.w3schools.com/html/mov_bbb.mp4" },
+      3: { name: "ไอดีเน้นสกินปืนเป็นหลัก", category: "Valorant", price: 1700, code: "รหัสสินค้า #VR001", sub: "รายละเอียด: เลเวล 144 ,มีมีด 2 เล่ม", desc: "- ชื่อไอดี: #GM1003\n- แรงก์: Diamond\n- สกินปืนและแฟชั่นครบถ้วน ปลอดภัย 100%", images: ["images/รูปคลังสินค้าไอดี/id07.png", "images/รูปคลังสินค้าไอดี/id08.png", "images/รูปคลังสินค้าไอดี/id09.png"], video: "https://www.w3schools.com/html/mov_bbb.mp4" },
+      4: { name: "อุปกรณ์คอมมือสองสภาพดี", category: "Hardware", price: 3500, code: "รหัสสินค้า #EM001", sub: "รายละเอียด: การ์ดจอ GTX 1060 สภาพสวย", desc: "- อุปกรณ์: ครบกล่อง\n- ประกันใจ: 7 วันเต็ม", images: ["images/รูปคลังสินค้าไอดี/อุปกรณ์คอมมือ2/EM001.png", "images/รูปคลังสินค้าไอดี/อุปกรณ์คอมมือ2/EM002.png", "images/รูปคลังสินค้าไอดี/อุปกรณ์คอมมือ2/EM003.png"], video: "https://www.w3schools.com/html/mov_bbb.mp4" }
+    };
+    const item = database[productId] || database[1];
+    
+    document.getElementById('productName').innerText = item.name;
+    document.getElementById('productCategory').innerText = item.category;
+    document.getElementById('productPrice').innerText = `฿${item.price.toLocaleString()}`;
+    document.getElementById('productCode').innerText = item.code;
+    document.getElementById('productSubDetail').innerText = item.sub;
+    document.getElementById('productDescription').innerText = item.desc;
+    document.getElementById('mainImage').src = item.images[0];
+    
+    const thumbsContainer = document.getElementById('galleryThumbs');
+    thumbsContainer.innerHTML = '';
+    item.images.forEach((imgSrc, index) => {
+      thumbsContainer.innerHTML += `<div class="thumb-item ${index === 0 ? 'active' : ''}" onclick="changeImage(this, '${imgSrc}')"><img src="${imgSrc}" alt="Thumb ${index + 1}"></div>`;
+    });
+    document.getElementById('videoContainer').innerHTML = `<video controls poster="${item.images[0]}"><source src="${item.video}" type="video/mp4">เบราว์เซอร์ของคุณไม่รองรับวิดีโอ</video>`;
+
+    let checkoutUrl = `topup.html?id=${encodeURIComponent(item.code)}&name=${encodeURIComponent(item.name)}&category=${encodeURIComponent(item.category)}&price=${item.price}`;
+    let buyBtn = document.getElementById('mainBuyButton');
+    if (buyBtn) {
+      buyBtn.setAttribute('data-url', checkoutUrl);
+    }
+
+    function handleCheckoutClick(event) {
+      event.preventDefault();
+      
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true' && localStorage.getItem('currentUser');
+      if (!isLoggedIn) {
+        document.getElementById('customAlertModal').classList.add('show');
+        return;
+      }
+
+      let buyBtn = document.getElementById('mainBuyButton');
+      window.location.href = buyBtn.getAttribute('data-url');
+    }
+
+    function syncUserData() {
+      let user = JSON.parse(localStorage.getItem('currentUser'));
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true' && user;
+      const navRight = document.getElementById('navRightAction');
+
+      if (isLoggedIn) {
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let foundUser = users.find(u => u.email === user.email);
+        if (foundUser) {
+          user.credit = foundUser.credit;
+          localStorage.setItem('currentUser', JSON.stringify(user));
+        }
+
+        const fmt = Number(user.credit || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ฿';
+        
+        navRight.innerHTML = `
+          <div class="user-menu-container">
+            <div class="user-btn" onclick="toggleMenu()">
+              <div class="avatar-sm">${user.username.charAt(0).toUpperCase()}</div>
+              <div style="text-align: left;">
+                <div style="font-size: 0.85rem; font-weight: 600; color: #fff;">${user.username}</div>
+                <div style="font-size: 0.7rem; color: var(--success); font-weight: 500;">${fmt}</div>
+              </div>
+            </div>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <div class="dropdown-header">
+                <div style="font-weight: 600; color: #fff;">${user.username}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">${user.email}</div>
+                <div class="credit-badge">เครดิต: ${fmt}</div>
+              </div>
+            <a href="profile.html" class="dropdown-item">👤 โปรไฟล์</a>
+            <a href="topup.html" class="dropdown-item">💳 เติมเงิน</a>
+            <a href="topup-history.html" class="dropdown-item">💰 ประวัติการเติมเงิน</a>
+            <a href="order-history.html" class="dropdown-item">📦 ประวัติการซื้อของ</a>
+            <button class="btn-logout" onclick="logout()">ออกจากระบบ</button>
+            </div>
+          </div>
+        `;
+      } else {
+        navRight.innerHTML = `<a href="login.html" class="btn-auth btn-login">เข้าสู่ระบบ</a><a href="register.html" class="btn-auth btn-reg">สมัครสมาชิก</a>`;
+      }
+    }
+
+    function toggleMenu() { document.getElementById('dropdownMenu').classList.toggle('show'); }
+    window.onclick = function(event) {
+      if (!event.target.closest('.user-menu-container')) {
+        const menu = document.getElementById('dropdownMenu');
+        if (menu && menu.classList.contains('show')) menu.classList.remove('show');
+      }
+    }
+    function logout() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('currentUser');
+      window.location.reload();
+    }
+    function openReadBeforeBuy() { document.getElementById('readBeforeBuyModal').classList.add('show'); }
+    function openShareModal() {
+      const url = window.location.href;
+      document.getElementById('shareLinkInput').value = url;
+      document.getElementById('qrCodeImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
+      document.getElementById('shareModal').classList.add('show');
+    }
+    function copyLinkOnly() {
+      const input = document.getElementById('shareLinkInput');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+      alert('คัดลอกลิงก์เรียบร้อยแล้ว!');
+    }
+    function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show')); }
+    function checkCloseModal(event, modalId) { if (event.target.id === modalId) { closeModals(); } }
+    
+    syncUserData();
+  </script>
+</body>
+</html>

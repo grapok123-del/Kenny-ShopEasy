@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>สมัครสมาชิก — GameMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { 
+      --bg-color: #0d1117; --card-bg: #161b22; --border-color: #30363d; 
+      --text-main: #f0f6fc; --text-muted: #8b949e; --primary: #ff3b5c; 
+      --primary-hover: #e0324f; --success: #2ea043; --danger: #f85149;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Prompt', sans-serif; display: flex; min-height: 100vh; align-items: center; justify-content: center; padding: 20px; }
+    a { color: inherit; text-decoration: none; }
+    
+    .auth-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: 16px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+    .brand { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+    .logo { background: var(--primary); color: #fff; font-weight: 700; padding: 6px 14px; border-radius: 8px; box-shadow: 0 0 15px rgba(255, 59, 92, 0.4); }
+    .brand b { font-size: 1.1rem; display: block; line-height: 1.2; text-align: left; }
+    .brand small { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; display: block; text-align: left; }
+    .auth-box h1 { font-size: 1.6rem; margin-bottom: 6px; font-weight: 700; }
+    .auth-box p.subtitle { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 25px; }
+    
+    .form { display: flex; flex-direction: column; gap: 16px; text-align: left; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.85rem; color: var(--text-main); font-weight: 500; }
+    .form input { background: #21262d; border: 1px solid var(--border-color); color: var(--text-main); padding: 12px 14px; border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; }
+    .form input:focus { border-color: var(--primary); }
+
+    .btn { width: 100%; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; border: none; cursor: pointer; background: var(--primary); color: #fff; margin-top: 10px; font-family: inherit; }
+    .btn:hover { background: var(--primary-hover); }
+
+    .error-msg { color: var(--danger); font-size: 0.85rem; display: none; text-align: center; }
+    .auth-footer-links { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px; align-items: center; }
+    .switch { font-size: 0.85rem; color: var(--text-muted); }
+    .switch a { color: var(--primary); font-weight: 600; margin-left: 4px; }
+  </style>
+</head>
+<body>
+  <main class="auth-box">
+    <a class="brand" href="index.html">
+      <div class="logo">GM</div>
+      <div><b>GameMarket</b><small>GAME ACCOUNT MARKET</small></div>
+    </a>
+    
+    <h1>สมัครสมาชิก</h1>
+    <p class="subtitle">สร้างบัญชีใหม่เพื่อเข้าใช้งานระบบ</p>
+
+    <form class="form" id="registerForm">
+      <div class="form-group">
+        <label for="username">ชื่อผู้ใช้ (Username)</label>
+        <input type="text" id="username" placeholder="เช่น Player01" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">อีเมล (Email)</label>
+        <input type="email" id="email" placeholder="you@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">รหัสผ่าน (Password)</label>
+        <input type="password" id="password" placeholder="••••••••" required>
+      </div>
+
+      <p class="error-msg" id="errorMsg">อีเมลนี้ถูกใช้งานแล้ว!</p>
+
+      <button type="submit" class="btn">ยืนยันการสมัครสมาชิก</button>
+    </form>
+
+    <div class="auth-footer-links">
+      <p class="switch">มีบัญชีอยู่แล้ว? <a href="login.html">เข้าสู่ระบบ</a></p>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+
+      // ดึงข้อมูลผู้ใช้ทั้งหมดที่เคยสมัครไว้
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+
+      // ตรวจสอบว่ามีอีเมลนี้ซ้ำหรือไม่
+      const existingUser = users.find(user => user.email === email);
+      if (existingUser) {
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      // บันทึกผู้ใช้ใหม่ พร้อมกำหนดค่า credit เริ่มต้นเป็น 0
+      users.push({ username, email, password, credit: 0 });
+      localStorage.setItem('users', JSON.stringify(users));
+
+      alert('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ');
+      window.location.href = 'login.html';
+    });
+  </script>
+</body>
+</html>

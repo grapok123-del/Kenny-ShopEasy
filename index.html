@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GameMarket — ตลาดไอดีเกม สินค้าไอที และแอปพรีเมียม</title>
+  <!-- Open Graph Meta Tags สำหรับพรีวิวลิงก์ -->
+  <meta property="og:url" content="https://5-lovat-mu.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="GameMarket - ร้านขายไอดีเกมยอดฮิต ปลอดภัย 24 ชม.">
+  <meta property="og:description" content="แหล่งรวมไอดีเกมคุณภาพ เติมเงินอัตโนมัติ ส่งไว ปลอดภัย 100%">
+  <meta property="og:image" content="https://5-lovat-mu.vercel.app/images/imagesA1.png">
+
+  <!-- ลิงก์ฟอนต์และสไตล์เดิมของคุณ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: #131824;
+      --border-color: #212a3d;
+      --text-main: #f0f6fc;
+      --text-muted: #8b949e;
+      --primary: #d93838;
+      --primary-hover: #c02e2e;
+      --valo-color: #ff4655;
+      --ff-color: #ff9900;
+      --success: #2ea043;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Prompt', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+    /* Header & Nav */
+    .navbar { background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
+    .navbar-container { display: flex; align-items: center; justify-content: space-between; height: 75px; }
+    .brand { display: flex; align-items: center; gap: 12px; transition: transform 0.2s ease; }
+    .brand:hover { transform: scale(1.02); }
+    .logo { background: linear-gradient(135deg, var(--primary), #ff6b6b); color: #fff; font-weight: 700; padding: 6px 14px; border-radius: 8px; box-shadow: 0 0 15px rgba(217, 56, 56, 0.4); }
+    .brand-name b { font-size: 1.1rem; display: block; line-height: 1.2; }
+    .brand-name small { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; }
+    
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; transition: color 0.2s ease; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-main); }
+    
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+
+    /* Hamburger Menu Button */
+    .menu-toggle-btn {
+      display: none; background: transparent; border: 1px solid var(--border-color);
+      color: var(--text-main); font-size: 1.2rem; width: 40px; height: 40px; border-radius: 10px; 
+      align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
+    }
+    .menu-toggle-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    .btn { 
+      display: inline-flex; align-items: center; justify-content: center; 
+      padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; 
+      cursor: pointer; border: none; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); 
+    }
+    .btn:active { transform: scale(0.96) !important; }
+    .btn.primary, .btn.red { background: var(--primary); color: #fff; box-shadow: 0 4px 15px rgba(217, 56, 56, 0.3); }
+    .btn.primary:hover, .btn.red:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(217, 56, 56, 0.45); }
+    .btn.ghost { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+
+    /* User Menu */
+    .user-menu-container { position: relative; }
+    .user-btn {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg-color); border: 1px solid var(--border-color);
+      padding: 6px 14px; border-radius: 30px; cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .user-btn:hover { border-color: var(--primary); }
+    .avatar { 
+      width: 32px; height: 32px; border-radius: 50%; background: var(--primary); 
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: #fff;
+    }
+    .dropdown-menu {
+      position: absolute; right: 0; top: 55px; width: 240px;
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 14px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      display: none; flex-direction: column; overflow: hidden; z-index: 200;
+      opacity: 0; transform: translateY(-10px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .dropdown-menu.show { display: flex; opacity: 1; transform: translateY(0); }
+    .dropdown-header { padding: 15px; border-bottom: 1px solid var(--border-color); text-align: left; }
+    .credit-badge { 
+      background: rgba(217, 56, 56, 0.15); color: var(--primary); font-size: 0.75rem; 
+      padding: 4px 10px; border-radius: 6px; margin-top: 6px; display: inline-block; font-weight: 600;
+    }
+    .dropdown-item {
+      padding: 10px 15px; font-size: 0.85rem; color: var(--text-muted); 
+      display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; text-align: left;
+    }
+    .dropdown-item:hover { background: rgba(100,100,100,0.08); color: var(--text-main); padding-left: 18px; }
+    .btn-logout {
+      margin: 10px 15px 15px; background: var(--primary); color: #fff; text-align: center; 
+      padding: 9px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer;
+    }
+
+    /* Mobile Nav Overlay & Drawer */
+    .mobile-nav-overlay {
+      position: fixed; top: 75px; left: 0; width: 100%; height: calc(100vh - 75px);
+      background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+      display: none; z-index: 98; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .mobile-nav-overlay.show { display: block; opacity: 1; }
+    
+    .mobile-nav-drawer {
+      position: fixed; top: 75px; left: -100%; width: 80%; max-width: 300px; height: calc(100vh - 75px);
+      background: var(--card-bg); border-right: 1px solid var(--border-color); padding: 25px 20px;
+      display: flex; flex-direction: column; gap: 12px; z-index: 99; transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    }
+    .mobile-nav-drawer.show { left: 0; }
+    .mobile-nav-drawer a {
+      color: var(--text-muted); font-size: 1rem; font-weight: 500; padding: 12px 16px; border-radius: 10px;
+      background: var(--bg-color); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;
+    }
+    .mobile-nav-drawer a.active, .mobile-nav-drawer a:hover { color: var(--text-main); border-color: var(--primary); background: rgba(217, 56, 56, 0.08); }
+
+    /* Modals */
+    .custom-modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .custom-modal {
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      width: 90%; max-width: 420px; padding: 35px 30px; border-radius: 20px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3); text-align: center;
+      transform: scale(0.85) translateY(15px); opacity: 0;
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    }
+    .custom-modal-overlay.active .custom-modal { transform: scale(1) translateY(0); opacity: 1; }
+    .custom-modal-icon-warn {
+      width: 75px; height: 75px; background: rgba(217, 56, 56, 0.12);
+      border: 2px solid var(--primary); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; font-size: 2rem;
+    }
+    .custom-modal h3 { font-size: 1.35rem; margin-bottom: 10px; color: var(--text-main); font-weight: 700; }
+    .custom-modal p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
+    .custom-modal-buttons { display: flex; gap: 12px; }
+    .custom-modal-btn {
+      flex: 1; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; border: none; cursor: pointer;
+    }
+    .btn-cancel-modal { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-confirm-modal { background: var(--primary); color: #fff; }
+
+    /* Banner & Sections */
+    .banner-section { padding: 25px 0 10px 0; }
+    .banner-img-wrap { width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+    .banner-img-wrap img { width: 100%; height: auto; display: block; object-fit: cover; }
+    .section { padding: 35px 0; }
+    .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
+    
+    .view-all {
+      display: inline-flex; align-items: center; gap: 8px; color: var(--primary);
+      background: rgba(217, 56, 56, 0.08); border: 1px solid rgba(217, 56, 56, 0.25);
+      padding: 6px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 500; text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .view-all:hover { background: var(--primary); color: #ffffff; border-color: var(--primary); box-shadow: 0 4px 15px rgba(217, 56, 56, 0.35); transform: translateY(-1px); }
+    
+    .category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+    .category-card { 
+      background: var(--card-bg); border: 1px solid var(--border-color); padding: 18px 16px; 
+      border-radius: 14px; display: flex; align-items: center; gap: 14px; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); 
+    }
+    .category-card:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); }
+    .cat-icon { font-size: 1.8rem; }
+    
+    .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .product-item { 
+      background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; 
+      overflow: hidden; display: flex; flex-direction: column; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); 
+    }
+    .product-item:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12); }
+    .product-thumb { background: var(--bg-color); height: 150px; display: flex; align-items: center; justify-content: center; font-weight: 700; position: relative; color: var(--text-muted); overflow: hidden; }
+    .product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .game-badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; z-index: 2; color: #fff; }
+    .game-badge.ff { color: var(--ff-color); }
+    .game-badge.valo { color: var(--valo-color); }
+    .product-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .product-info h3 { font-size: 1.05rem; margin-bottom: 5px; font-weight: 600; }
+    .product-info p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
+    .product-bottom { display: flex; justify-content: space-between; align-items: center; }
+    .price { font-size: 1.25rem; font-weight: 700; color: #10b981; }
+    .btn-detail { font-size: 0.85rem; color: var(--primary); font-weight: 600; }
+
+    .footer { background: var(--card-bg); border-top: 1px solid var(--border-color); padding: 40px 0; color: var(--text-muted); font-size: 0.85rem; margin-top: 50px; }
+    .footer-flex { display: flex; justify-content: space-between; align-items: center; gap: 20px; text-align: left; }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text-main); }
+
+    @media (max-width: 992px) { .category-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) {
+      .container { padding: 0 16px; }
+      .category-grid, .product-grid { grid-template-columns: 1fr; gap: 15px; }
+      .footer-flex { flex-direction: column; text-align: center; gap: 15px; }
+      .footer-links { justify-content: center; }
+      .nav-links { display: none; }
+      .menu-toggle-btn { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="custom-modal-overlay" id="customModalOverlay" onclick="handleOverlayClick(event)">
+    <div class="custom-modal" id="customModalBox">
+      <div id="modalIconContainer"><div class="custom-modal-icon-warn">⚠️</div></div>
+      <h3 id="modalTitle">ยืนยันการออกจากระบบ</h3>
+      <p id="modalDesc">คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?</p>
+      <div class="custom-modal-buttons" id="modalButtons">
+        <button class="custom-modal-btn btn-cancel-modal" onclick="closeCustomModal()">ยกเลิก</button>
+        <button class="custom-modal-btn btn-confirm-modal" id="modalConfirmBtn">ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="navbar">
+    <div class="container navbar-container">
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <button class="menu-toggle-btn" onclick="toggleMobileMenu()">☰</button>
+        <a href="index.html" class="brand">
+          <div class="logo">GM</div>
+          <div class="brand-name"><b>GameMarket</b><small>ACCOUNT STORE</small></div>
+        </a>
+      </div>
+      
+      <nav class="nav-links">
+        <a class="active" href="index.html">หน้าหลัก</a>
+        <a href="games.html">สินค้าทั้งหมด</a>
+        <a href="how-to-buy.html">วิธีการซื้อ</a>
+        <a href="contact.html">ติดต่อเรา</a>
+      </nav>
+
+      <div class="nav-actions">
+        <div id="loggedOutState" style="display: flex; gap: 10px;">
+          <a class="btn ghost" href="login.html" style="padding: 8px 12px; font-size: 0.85rem;">เข้าสู่ระบบ</a>
+          <a class="btn primary" href="register.html" style="padding: 8px 12px; font-size: 0.85rem;">สมัครสมาชิก</a>
+        </div>
+
+        <div class="user-menu-container" id="loggedInState" style="display: none;">
+          <div class="user-btn" onclick="toggleMenu()">
+            <div class="avatar" id="userAvatar">U</div>
+            <div style="text-align: left;" class="hide-mobile-text">
+              <div style="font-size: 0.85rem; font-weight: 600;" id="userNameDisplay">Player01</div>
+              <div style="font-size: 0.7rem; color: var(--success); font-weight: 500;" id="userCreditDisplay">0.00 ฿</div>
+            </div>
+          </div>
+
+          <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-header">
+              <div style="font-weight: 600;" id="dropdownUserName">Player01</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);" id="dropdownUserEmail">player01@example.com</div>
+              <div class="credit-badge" id="dropdownUserCreditBadge">เครดิต: 0.00 ฿</div>
+            </div>
+            <a href="profile.html" class="dropdown-item">👤 โปรไฟล์</a>
+            <a href="topup.html" class="dropdown-item">💳 เติมเงิน</a>
+            <a href="topup-history.html" class="dropdown-item">💰 ประวัติการเติมเงิน</a>
+            <a href="order-history.html" class="dropdown-item">📦 ประวัติการซื้อของ</a>
+            <button class="btn-logout" onclick="logout()">ออกจากระบบ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileMenu()"></div>
+  <div class="mobile-nav-drawer" id="mobileNavDrawer">
+    <a class="active" href="index.html">🏠 หน้าหลัก</a>
+    <a href="games.html">🎮 สินค้าทั้งหมด</a>
+    <a href="how-to-buy.html">📖 วิธีการซื้อ</a>
+    <a href="contact.html">📞 ติดต่อเรา</a>
+  </div>
+
+  <main>
+    <section class="banner-section">
+      <div class="container banner-grid">
+        <div class="banner-img-wrap">
+          <img src="images/imagesA1.png" alt="รับซื้อ-ขาย ไอดีเกม VALORANT | FREE FIRE ปลอดภัย 100%">
+        </div>
+      </div>
+    </section>
+
+    <section class="section container">
+      <div class="section-header">
+        <div>
+          <h2>เลือกตามหมวดหมู่สินค้า</h2>
+          <p style="color:var(--text-muted); font-size:0.85rem;">ค้นหาไอดีเกม อุปกรณ์คอมพิวเตอร์ และบริการพรีเมียม</p>
+        </div>
+        <a href="games.html" class="view-all">ดูทั้งหมด <span class="arrow">→</span></a>
+      </div>
+
+      <div class="category-grid">
+        <a href="games.html?cat=ff" class="category-card">
+          <span class="cat-icon">🔥</span>
+          <div><b>Free Fire</b><br><small id="count-ff" style="color:var(--text-muted);">กำลังโหลด...</small></div>
+        </a>
+        <a href="games.html?cat=valo" class="category-card">
+          <span class="cat-icon">🎯</span>
+          <div><b>VALORANT</b><br><small id="count-valo" style="color:var(--text-muted);">กำลังโหลด...</small></div>
+        </a>
+        <a href="games.html?cat=pc" class="category-card">
+          <span class="cat-icon">💻</span>
+          <div><b>อุปกรณ์คอมมือ 2</b><br><small id="count-pc" style="color:var(--text-muted);">กำลังโหลด...</small></div>
+        </a>
+        <a href="games.html?cat=app" class="category-card">
+          <span class="cat-icon">👑</span>
+          <div><b>แอปพลิเคชันพรีเมียม</b><br><small id="count-app" style="color:var(--text-muted);">กำลังโหลด...</small></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section container">
+      <div class="section-header">
+        <div>
+          <h2>สินค้าอัปเดตล่าสุด</h2>
+          <p style="color:var(--text-muted); font-size:0.85rem;">รายการมาใหม่พร้อมส่งมอบทันที</p>
+        </div>
+        <a href="games.html" class="view-all">ดูทั้งหมด <span class="arrow">→</span></a>
+      </div>
+
+      <div class="product-grid" id="latestProductsGrid">
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-flex">
+      <div>
+        <b style="font-size: 1.05rem; color: var(--text-main);">GameMarket</b>
+        <p style="margin-top: 5px;">© 2026 GameMarket Demo. All rights reserved.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">หน้าหลัก</a>
+        <a href="games.html">สินค้าทั้งหมด</a>
+        <a href="how-to-buy.html">วิธีการซื้อ</a>
+        <a href="contact.html">ติดต่อเรา</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const allProductsData = [
+      { id: 1, category: "ff", badgeClass: "ff", badgeText: "Free Fire", title: "เลเวล 78 ยอดไลค์ 14000+", desc: "ID: FF001 • ข้อมูลครบ ปลอดภัย 100%", price: "2,499 บาท" },
+      { id: 2, category: "ff", badgeClass: "ff", badgeText: "Free Fire", title: "เลเวล 72 ยอดไลค์ 10000+", desc: "ID: FF002 • ข้อมูลครบ ปลอดภัย 100%", price: "1,799 บาท" },
+      { id: 3, category: "valo", badgeClass: "valo", badgeText: "VALORANT", title: "เลเวล 144 แรงค์ Immortals", desc: "ID: VR001 • ข้อมูลครบ ปลอดภัย 100%", price: "1,499 บาท" },
+      { id: 4, category: "pc", badgeClass: "", badgeStyle: "color: #61afef;", badgeText: "PC Hardware", title: "การ์ดจอ 5060", desc: "ID: EM001 • สภาพดี พร้อมใช้งาน", price: "1,499 บาท" }
+    ];
+
+    function renderLatestProducts() {
+      const grid = document.getElementById('latestProductsGrid');
+      if (!grid) return;
+      
+      const latestItems = allProductsData.slice(0, 3);
+      let html = '';
+      
+      latestItems.forEach(item => {
+        html += `
+          <a href="product.html?id=${item.id}" class="product-item">
+            <div class="product-thumb"><span class="game-badge ${item.badgeClass}" style="${item.badgeStyle || ''}">${item.badgeText}</span>${item.badgeText.toUpperCase()}</div>
+            <div class="product-info">
+              <h3>${item.title}</h3>
+              <p>${item.desc}</p>
+              <div class="product-bottom"><span class="price">${item.price}</span><span class="btn-detail">ดูรายละเอียด →</span></div>
+            </div>
+          </a>
+        `;
+      });
+      grid.innerHTML = html;
+    }
+
+    function updateCategoryCounts() {
+      let countFf = 0, countValo = 0, countPc = 0, countApp = 0;
+      allProductsData.forEach(item => {
+        if (item.category === 'ff') countFf++;
+        if (item.category === 'valo') countValo++;
+        if (item.category === 'pc') countPc++;
+        if (item.category === 'app') countApp++;
+      });
+
+      document.getElementById('count-ff').innerText = countFf + ' รายการพร้อมส่ง';
+      document.getElementById('count-valo').innerText = countValo + ' รายการพร้อมส่ง';
+      document.getElementById('count-pc').innerText = countPc + ' รายการพร้อมส่ง';
+      document.getElementById('count-app').innerText = countApp + ' รายการพร้อมส่ง';
+    }
+
+    function checkAuthStatus() {
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+      const loggedInState = document.getElementById('loggedInState');
+      const loggedOutState = document.getElementById('loggedOutState');
+
+      if (isLoggedIn) {
+        if (loggedInState) loggedInState.style.display = 'block';
+        if (loggedOutState) loggedOutState.style.display = 'none';
+        syncUserData();
+      } else {
+        if (loggedInState) loggedInState.style.display = 'none';
+        if (loggedOutState) loggedOutState.style.display = 'flex';
+      }
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById('dropdownMenu');
+      if (menu) menu.classList.toggle('show');
+    }
+
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobileNavDrawer');
+      const overlay = document.getElementById('mobileNavOverlay');
+      if (drawer && overlay) {
+        drawer.classList.toggle('show');
+        overlay.classList.toggle('show');
+      }
+    }
+
+    function logout() {
+      const overlay = document.getElementById('customModalOverlay');
+      const iconContainer = document.getElementById('modalIconContainer');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDesc = document.getElementById('modalDesc');
+      const modalButtons = document.getElementById('modalButtons');
+
+      iconContainer.innerHTML = `<div class="custom-modal-icon-warn">⚠️</div>`;
+      modalTitle.innerText = "ยืนยันการออกจากระบบ";
+      modalDesc.innerText = "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบจากบัญชีนี้?";
+      modalButtons.innerHTML = `
+        <button class="custom-modal-btn btn-cancel-modal" onclick="closeCustomModal()">ยกเลิก</button>
+        <button class="custom-modal-btn btn-confirm-modal" onclick="executeLogout()">ออกจากระบบ</button>
+      `;
+      overlay.classList.add('active');
+    }
+
+    function executeLogout() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
+    }
+
+    function closeCustomModal() {
+      document.getElementById('customModalOverlay').classList.remove('active');
+    }
+
+    function handleOverlayClick(event) {
+      if (event.target === document.getElementById('customModalOverlay')) {
+        closeCustomModal();
+      }
+    }
+
+    window.onclick = function(event) {
+      if (!event.target.closest('.user-menu-container')) {
+        const menu = document.getElementById('dropdownMenu');
+        if (menu && menu.classList.contains('show')) {
+          menu.classList.remove('show');
+        }
+      }
+    }
+
+    function syncUserData() {
+      let user = JSON.parse(localStorage.getItem('currentUser'));
+      if (user) {
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let foundUser = users.find(u => u.email === user.email);
+        if (foundUser) {
+          user.credit = foundUser.credit;
+          localStorage.setItem('currentUser', JSON.stringify(user));
+        }
+        document.getElementById('userNameDisplay').innerText = user.username;
+        document.getElementById('dropdownUserName').innerText = user.username;
+        document.getElementById('userAvatar').innerText = user.username.charAt(0).toUpperCase();
+        document.getElementById('dropdownUserEmail').innerText = user.email;
+        const fmtCredit = Number(user.credit || 0).toFixed(2) + ' ฿';
+        document.getElementById('userCreditDisplay').innerText = fmtCredit;
+        document.getElementById('dropdownUserCreditBadge').innerText = `เครดิต: ${fmtCredit}`;
+      }
+    }
+
+    renderLatestProducts();
+    checkAuthStatus();
+    syncUserData();
+    updateCategoryCounts();
+  </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>เข้าสู่ระบบ — GameMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { 
+      --bg-color: #0d1117; --card-bg: #161b22; --border-color: #30363d; 
+      --text-main: #f0f6fc; --text-muted: #8b949e; --primary: #ff3b5c; 
+      --primary-hover: #e0324f; --success: #2ea043; --danger: #f85149;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Prompt', sans-serif; display: flex; min-height: 100vh; align-items: center; justify-content: center; padding: 20px; }
+    a { color: inherit; text-decoration: none; }
+    
+    .auth-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: 16px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+    .brand { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+    .logo { background: var(--primary); color: #fff; font-weight: 700; padding: 6px 14px; border-radius: 8px; box-shadow: 0 0 15px rgba(255, 59, 92, 0.4); }
+    .brand b { font-size: 1.1rem; display: block; line-height: 1.2; text-align: left; }
+    .brand small { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; display: block; text-align: left; }
+    .auth-box h1 { font-size: 1.6rem; margin-bottom: 6px; font-weight: 700; }
+    .auth-box p.subtitle { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 25px; }
+    
+    .form { display: flex; flex-direction: column; gap: 16px; text-align: left; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.85rem; color: var(--text-main); font-weight: 500; }
+    .form input { background: #21262d; border: 1px solid var(--border-color); color: var(--text-main); padding: 12px 14px; border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; }
+    .form input:focus { border-color: var(--primary); }
+
+    .btn { width: 100%; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; border: none; cursor: pointer; background: var(--primary); color: #fff; margin-top: 10px; font-family: inherit; }
+    .btn:hover { background: var(--primary-hover); }
+
+    .error-msg { color: var(--danger); font-size: 0.85rem; display: none; text-align: center; }
+    .auth-footer-links { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px; align-items: center; }
+    .switch { font-size: 0.85rem; color: var(--text-muted); }
+    .switch a { color: var(--primary); font-weight: 600; margin-left: 4px; }
+    .back-btn-green { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: #fff; padding: 8px 18px; border-radius: 20px; background: var(--success); }
+
+    /* POPUP MODAL */
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 999; }
+    .modal-backdrop.active { opacity: 1; visibility: visible; }
+    .modal-card { background: #161b22; border: 1px solid var(--border-color); border-radius: 16px; padding: 35px 25px; width: 90%; max-width: 360px; text-align: center; }
+    .success-circle { width: 60px; height: 60px; border-radius: 50%; background: rgba(46, 160, 67, 0.15); border: 2px solid var(--success); display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: var(--success); font-size: 1.8rem; }
+  </style>
+</head>
+<body>
+  <main class="auth-box">
+    <a class="brand" href="index.html">
+      <div class="logo">GM</div>
+      <div><b>GameMarket</b><small>GAME ACCOUNT MARKET</small></div>
+    </a>
+    
+    <h1>เข้าสู่ระบบ</h1>
+    <p class="subtitle">เข้าสู่บัญชีเพื่อจัดการคำสั่งซื้อ</p>
+
+    <form class="form" id="loginForm">
+      <div class="form-group">
+        <label for="email">อีเมล (Email)</label>
+        <input type="email" id="email" placeholder="you@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">รหัสผ่าน (Password)</label>
+        <input type="password" id="password" placeholder="••••••••" required>
+      </div>
+
+      <p class="error-msg" id="errorMsg">อีเมลหรือรหัสผ่านไม่ถูกต้อง!</p>
+
+      <button type="submit" class="btn">เข้าสู่ระบบ</button>
+    </form>
+
+    <div class="auth-footer-links">
+      <p class="switch">ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a></p>
+      <a class="back-btn-green" href="index.html"><span>←</span> กลับหน้าหลัก</a>
+    </div>
+  </main>
+
+  <div class="modal-backdrop" id="successModal">
+    <div class="modal-card">
+      <div class="success-circle">✓</div>
+      <h2 style="font-size: 1.3rem; margin-bottom: 6px;">เข้าสู่ระบบสำเร็จ!</h2>
+      <p style="color: var(--text-muted); font-size: 0.85rem;">กำลังนำคุณไปยังหน้าหลัก...</p>
+    </div>
+  </div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+
+      // ดึงข้อมูลผู้ใช้จาก localStorage
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+
+      // ค้นหาผู้ใช้ที่ตรงทั้งอีเมลและรหัสผ่าน
+      const validUser = users.find(u => u.email === email && u.password === password);
+
+      if (validUser) {
+        // ตรวจสอบความปลอดภัยเรื่องค่า credit ให้แน่ใจว่ามีตัวตน (ถ้าไม่มีให้เป็น 0)
+        if (validUser.credit === undefined) {
+          validUser.credit = 0;
+        }
+
+        // บันทึกสถานะล็อกอินและข้อมูลล่าสุดของผู้ใช้ (รวมถึงยอดเงินเครดิต)
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('currentUser', JSON.stringify(validUser));
+
+        errorMsg.style.display = 'none';
+        document.getElementById('successModal').classList.add('active');
+
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1200);
+      } else {
+        // หากใส่อีเมลหรือรหัสผ่านผิด
+        errorMsg.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

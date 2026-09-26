@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>วิธีการซื้อ — GameMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { 
+      --bg-color: #0b0f19; 
+      --card-bg: #131824; 
+      --border-color: #212a3d; 
+      --text-main: #f0f6fc; 
+      --text-muted: #8b949e; 
+      --primary: #d93838; 
+      --primary-hover: #c02e2e;
+      --success: #2ea043;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      background-color: var(--bg-color); 
+      color: var(--text-main); 
+      font-family: 'Prompt', sans-serif; 
+      line-height: 1.6; 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    a { color: inherit; text-decoration: none; }
+    
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+
+    /* Header & Nav */
+    .navbar { background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
+    .navbar-container { display: flex; align-items: center; justify-content: space-between; height: 75px; max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    .brand { display: flex; align-items: center; gap: 12px; transition: transform 0.2s ease; }
+    .brand:hover { transform: scale(1.02); }
+    .logo { background: linear-gradient(135deg, var(--primary), #ff6b6b); color: #fff; font-weight: 700; padding: 6px 14px; border-radius: 8px; box-shadow: 0 0 15px rgba(217, 56, 56, 0.4); }
+    .brand-name b { font-size: 1.1rem; display: block; line-height: 1.2; }
+    .brand-name small { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; }
+    
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; transition: color 0.2s ease; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-main); font-weight: 600; }
+    
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+
+    /* Hamburger Menu Button */
+    .menu-toggle-btn {
+      display: none; background: transparent; border: 1px solid var(--border-color);
+      color: var(--text-main); font-size: 1.2rem; width: 40px; height: 40px; border-radius: 10px; 
+      align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
+    }
+    .menu-toggle-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    .btn { 
+      display: inline-flex; align-items: center; justify-content: center; 
+      padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; 
+      cursor: pointer; border: none; transition: all 0.25s ease; 
+    }
+    .btn.primary, .btn.red { background: var(--primary); color: #fff; }
+    .btn.primary:hover, .btn.red:hover { background: var(--primary-hover); }
+    .btn.ghost { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+
+    /* User Menu */
+    .user-menu-container { position: relative; }
+    .user-btn {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg-color); border: 1px solid var(--border-color);
+      padding: 6px 14px; border-radius: 30px; cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .user-btn:hover { border-color: var(--primary); }
+    .avatar { 
+      width: 32px; height: 32px; border-radius: 50%; background: var(--primary); 
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: #fff;
+    }
+    .dropdown-menu {
+      position: absolute; right: 0; top: 55px; width: 240px;
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 14px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      display: none; flex-direction: column; overflow: hidden; z-index: 200;
+    }
+    .dropdown-menu.show { display: flex; }
+    .dropdown-header { padding: 15px; border-bottom: 1px solid var(--border-color); text-align: left; }
+    .credit-badge { 
+      background: rgba(217, 56, 56, 0.15); color: var(--primary); font-size: 0.75rem; 
+      padding: 4px 10px; border-radius: 6px; margin-top: 6px; display: inline-block; font-weight: 600;
+    }
+    .dropdown-item {
+      padding: 10px 15px; font-size: 0.85rem; color: var(--text-muted); 
+      display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; text-align: left;
+    }
+    .dropdown-item:hover { background: rgba(100,100,100,0.08); color: var(--text-main); }
+    .btn-logout {
+      margin: 10px 15px 15px; background: var(--primary); color: #fff; text-align: center; 
+      padding: 9px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer;
+    }
+    .btn-logout:hover { background: var(--primary-hover); }
+
+    /* Mobile Nav Overlay & Drawer */
+    .mobile-nav-overlay {
+      position: fixed; top: 75px; left: 0; width: 100%; height: calc(100vh - 75px);
+      background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+      display: none; z-index: 98; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .mobile-nav-overlay.show { display: block; opacity: 1; }
+    
+    .mobile-nav-drawer {
+      position: fixed; top: 75px; left: -100%; width: 80%; max-width: 300px; height: calc(100vh - 75px);
+      background: var(--card-bg); border-right: 1px solid var(--border-color); padding: 25px 20px;
+      display: flex; flex-direction: column; gap: 12px; z-index: 99; transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    }
+    .mobile-nav-drawer.show { left: 0; }
+    .mobile-nav-drawer a {
+      color: var(--text-muted); font-size: 1rem; font-weight: 500; padding: 12px 16px; border-radius: 10px;
+      background: var(--bg-color); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;
+    }
+    .mobile-nav-drawer a.active, .mobile-nav-drawer a:hover { color: var(--text-main); border-color: var(--primary); background: rgba(217, 56, 56, 0.08); }
+
+    /* Custom Modal */
+    .custom-modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .custom-modal {
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      width: 100%; max-width: 380px; padding: 25px; border-radius: 16px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5); text-align: center;
+      transform: translateY(20px) scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .custom-modal-overlay.active .custom-modal { transform: translateY(0) scale(1); }
+    .custom-modal-icon { font-size: 2.5rem; margin-bottom: 15px; }
+    .custom-modal h3 { font-size: 1.2rem; margin-bottom: 8px; color: var(--text-main); font-weight: 600; }
+    .custom-modal-p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; }
+    .custom-modal-buttons { display: flex; gap: 10px; }
+    .custom-modal-btn {
+      flex: 1; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;
+    }
+    .btn-cancel-modal { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-confirm-modal { background: var(--primary); color: #fff; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 30px; right: 20px; background: #2ea043; color: #fff;
+      padding: 12px 20px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 10000;
+      transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* How to Buy Content - ลดความกว้างลงเหลือ 460px และเพิ่มช่องไฟขอบซ้ายขวาให้ไม่อึดอัด */
+    .main-content { padding: 30px 0 60px; flex: 1; }
+    .page-header { text-align: center; margin-bottom: 30px; }
+    .page-header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+    .page-header h1 span { color: var(--primary); }
+    .page-header p { color: var(--text-muted); font-size: 0.85rem; max-width: 480px; margin: 0 auto; line-height: 1.5; padding: 0 15px; }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      max-width: 460px; /* ลดความกว้างสูงสุดลงเพื่อให้กล่องกระชับ ไม่ชนขอบมือถือ */
+      width: 90%;       /* เผื่อพื้นที่ว่างด้านข้างซ้ายขวาบนหน้าจอเล็ก */
+      margin: 0 auto;
+      gap: 18px; 
+    }
+
+    .step-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px 16px; 
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .step-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+
+    .step-number {
+      background: rgba(217, 56, 56, 0.15);
+      color: var(--primary);
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .step-info h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
+    .step-info p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+
+    footer { 
+      background: var(--card-bg); border-top: 1px solid var(--border-color); 
+      padding: 22px 20px; color: var(--text-muted); font-size: 0.8rem; 
+      margin-top: auto; 
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .menu-toggle-btn { display: flex; }
+      .footer-inner { flex-direction: column; gap: 10px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="navbar-container">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="menu-toggle-btn" onclick="toggleMobileMenu()">☰</button>
+        <a class="brand" href="index.html">
+          <div class="logo">GM</div>
+          <div class="brand-name"><b>GameMarket</b><small>ACCOUNT STORE</small></div>
+        </a>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">หน้าหลัก</a>
+        <a href="games.html">สินค้าทั้งหมด</a>
+        <a class="active" href="how-to-buy.html">วิธีการซื้อ</a>
+        <a href="contact.html">ติดต่อเรา</a>
+      </nav>
+      <div class="nav-actions">
+        <!-- สถานะ 1: ยังไม่ได้เข้าสู่ระบบ -->
+        <div id="loggedOutState" style="display: flex; gap: 10px;">
+          <a class="btn ghost" href="login.html">เข้าสู่ระบบ</a>
+          <a class="btn red" href="register.html">สมัครสมาชิก</a>
+        </div>
+
+        <!-- สถานะ 2: เข้าสู่ระบบแล้ว -->
+        <div class="user-menu-container" id="loggedInState" style="display: none;">
+          <div class="user-btn" onclick="toggleMenu()">
+            <div class="avatar" id="userAvatar">U</div>
+            <div style="text-align: left;">
+              <div style="font-size: 0.85rem; font-weight: 600; color: #fff;" id="userNameDisplay">Player01</div>
+              <div style="font-size: 0.7rem; color: #4ade80; font-weight: 500;" id="userCreditDisplay">0.00 ฿</div>
+            </div>
+          </div>
+
+          <!-- Dropdown Profile -->
+          <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-header">
+              <div style="font-weight: 600; color: #fff;" id="dropdownUserName">Player01</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);" id="dropdownUserEmail">player01@example.com</div>
+              <div class="credit-badge" id="dropdownUserCreditBadge">เครดิต: 0.00 ฿</div>
+            </div>
+            <a href="profile.html" class="dropdown-item">👤 โปรไฟล์</a>
+            <a href="topup.html" class="dropdown-item">💳 เติมเงิน</a>
+            <a href="topup-history.html" class="dropdown-item">💰 ประวัติการเติมเงิน</a>
+            <a href="order-history.html" class="dropdown-item">📦 ประวัติการซื้อของ</a>
+            <button class="btn-logout" onclick="logout()">ออกจากระบบ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Drawer & Backdrop -->
+  <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileMenu()"></div>
+  <div class="mobile-nav-drawer" id="mobileNavDrawer">
+    <a href="index.html">🏠 หน้าหลัก</a>
+    <a href="games.html">🎮 สินค้าทั้งหมด</a>
+    <a class="active" href="how-to-buy.html">📖 วิธีการซื้อ</a>
+    <a href="contact.html">📞 ติดต่อเรา</a>
+  </div>
+
+  <main class="container main-content">
+    <div class="page-header">
+      <span style="color: var(--primary); font-size: 0.75rem; font-weight: 600; letter-spacing: 1px;">GUIDE</span>
+      <h1>วิธีการใช้งานและ <span>สั่งซื้อสินค้า</span></h1>
+      <p>ขั้นตอนง่ายๆ ในการเติมเงิน เลือกซื้อไอดีเกม และรับข้อมูลสินค้าอัตโนมัติภายในไม่กี่วินาที</p>
+    </div>
+
+    <div class="steps-grid">
+      <!-- ขั้นตอนที่ 1 -->
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <div class="step-info">
+          <h3>สมัครสมาชิกและเข้าสู่ระบบ</h3>
+          <p>ทำการสมัครสมาชิกหรือเข้าสู่ระบบเว็บไซต์ GameMarket ให้เรียบร้อยเพื่อเริ่มต้นใช้งานและบันทึกประวัติการซื้อ</p>
+        </div>
+      </div>
+
+      <!-- ขั้นตอนที่ 2 -->
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <div class="step-info">
+          <h3>เติมเงินเข้าสู่ระบบ</h3>
+          <p>ไปที่เมนูเติมเงินและทำรายการผ่านช่องทางที่รองรับ (เช่น TrueMoney Wallet หรือ QR Code พร้อมเพย์) เครดิตจะเข้ากระเป๋าอัตโนมัติ</p>
+        </div>
+      </div>
+
+      <!-- ขั้นตอนที่ 3 -->
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <div class="step-info">
+          <h3>เลือกสินค้าที่ต้องการ</h3>
+          <p>เลือกหมวดหมู่เกมหรือสินค้าพรีเมียมที่คุณสนใจ ตรวจสอบรายละเอียด ราคา และสถานะพร้อมส่งให้เรียบร้อย</p>
+        </div>
+      </div>
+
+      <!-- ขั้นตอนที่ 4 -->
+      <div class="step-card">
+        <div class="step-number">4</div>
+        <div class="step-info">
+          <h3>ยืนยันการสั่งซื้อ</h3>
+          <p>กดปุ่มซื้อสินค้า ระบบจะทำการหักเครดิตจากยอดเงินของคุณทันทีและแสดงข้อมูลไอดี (Username / Password) ให้คุณใช้งานได้ทันที</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <b>GameMarket</b>
+      <span>© 2026 GameMarket Demo. All rights reserved.</span>
+      <a href="index.html">หน้าหลัก</a>
+    </div>
+  </footer>
+
+  <script>
+    function checkAuthStatus() {
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+      const loggedInState = document.getElementById('loggedInState');
+      const loggedOutState = document.getElementById('loggedOutState');
+
+      if (isLoggedIn) {
+        if (loggedInState) loggedInState.style.display = 'block';
+        if (loggedOutState) loggedOutState.style.display = 'none';
+
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser) {
+          if (currentUser.username) {
+            document.getElementById('userNameDisplay').innerText = currentUser.username;
+            document.getElementById('dropdownUserName').innerText = currentUser.username;
+            document.getElementById('userAvatar').innerText = currentUser.username.charAt(0).toUpperCase();
+          }
+          if (currentUser.email) {
+            document.getElementById('dropdownUserEmail').innerText = currentUser.email;
+          }
+        }
+      } else {
+        if (loggedInState) loggedInState.style.display = 'none';
+        if (loggedOutState) loggedOutState.style.display = 'flex';
+      }
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById('dropdownMenu');
+      if (menu) menu.classList.toggle('show');
+    }
+
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobileNavDrawer');
+      const overlay = document.getElementById('mobileNavOverlay');
+      if (drawer && overlay) {
+        drawer.classList.toggle('show');
+        overlay.classList.toggle('show');
+      }
+    }
+
+    function logout() {
+      const overlay = document.getElementById('customModalOverlay');
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDesc = document.getElementById('modalDesc');
+      const modalButtons = document.getElementById('modalButtons');
+
+      modalIcon.innerText = "⚠️";
+      modalTitle.innerText = "ยืนยันการออกจากระบบ";
+      modalDesc.innerText = "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบจากบัญชีนี้?";
+      
+      modalButtons.innerHTML = `
+        <button class="custom-modal-btn btn-cancel-modal" onclick="closeCustomModal()">ยกเลิก</button>
+        <button class="custom-modal-btn btn-confirm-modal" onclick="executeLogout()">ออกจากระบบ</button>
+      `;
+
+      overlay.classList.add('active');
+    }
+
+    function executeLogout() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
+    }
+
+    function closeCustomModal() {
+      const overlay = document.getElementById('customModalOverlay');
+      overlay.classList.remove('active');
+    }
+
+    window.onclick = function(event) {
+      if (!event.target.closest('.user-menu-container')) {
+        const menu = document.getElementById('dropdownMenu');
+        if (menu && menu.classList.contains('show')) {
+          menu.classList.remove('show');
+        }
+      }
+    }
+
+    function syncUserData() {
+      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser) {
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let foundUser = users.find(u => u.email === currentUser.email);
+        if (foundUser) {
+          currentUser.credit = foundUser.credit;
+          localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
+
+        const creditStr = Number(currentUser.credit || 0).toFixed(2) + ' ฿';
+        
+        const creditDisplay = document.getElementById('userCreditDisplay');
+        if (creditDisplay) creditDisplay.innerText = creditStr;
+
+        const creditBadge = document.getElementById('dropdownUserCreditBadge');
+        if (creditBadge) creditBadge.innerText = `เครดิต: ${creditStr}`;
+      }
+    }
+
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'currentUser') {
+        syncUserData();
+      }
+    });
+
+    checkAuthStatus();
+    syncUserData();
+  </script>
+</body>
+</html>

@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>สินค้าทั้งหมด — GameMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { 
+      --bg-color: #0b0f19; 
+      --card-bg: #131824; 
+      --border-color: #212a3d; 
+      --text-main: #f0f6fc; 
+      --text-muted: #8b949e; 
+      --primary: #d93838; 
+      --primary-hover: #c02e2e;
+      --success: #2ea043;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Prompt', sans-serif; line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+    /* Header & Nav */
+    .navbar { background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
+    .navbar-container { display: flex; align-items: center; justify-content: space-between; height: 75px; }
+    .brand { display: flex; align-items: center; gap: 12px; transition: transform 0.2s ease; }
+    .brand:hover { transform: scale(1.02); }
+    .logo { background: linear-gradient(135deg, var(--primary), #ff6b6b); color: #fff; font-weight: 700; padding: 6px 14px; border-radius: 8px; box-shadow: 0 0 15px rgba(217, 56, 56, 0.4); }
+    .brand-name b { font-size: 1.1rem; display: block; line-height: 1.2; }
+    .brand-name small { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; }
+    
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; transition: color 0.2s ease; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-main); }
+    
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+
+    /* Hamburger Menu Button */
+    .menu-toggle-btn {
+      display: none; background: transparent; border: 1px solid var(--border-color);
+      color: var(--text-main); font-size: 1.2rem; width: 40px; height: 40px; border-radius: 10px; 
+      align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
+    }
+    .menu-toggle-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    .btn { 
+      display: inline-flex; align-items: center; justify-content: center; 
+      padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; 
+      cursor: pointer; border: none; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); 
+    }
+    .btn:active { transform: scale(0.96) !important; }
+    .btn.primary, .btn.red { background: var(--primary); color: #fff; box-shadow: 0 4px 15px rgba(217, 56, 56, 0.3); }
+    .btn.primary:hover, .btn.red:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(217, 56, 56, 0.45); }
+    .btn.ghost { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+
+    /* User Menu */
+    .user-menu-container { position: relative; }
+    .user-btn {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg-color); border: 1px solid var(--border-color);
+      padding: 6px 14px; border-radius: 30px; cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .user-btn:hover { border-color: var(--primary); }
+    .avatar { 
+      width: 32px; height: 32px; border-radius: 50%; background: var(--primary); 
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: #fff;
+    }
+    .dropdown-menu {
+      position: absolute; right: 0; top: 55px; width: 240px;
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 14px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      display: none; flex-direction: column; overflow: hidden; z-index: 200;
+      opacity: 0; transform: translateY(-10px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .dropdown-menu.show { display: flex; opacity: 1; transform: translateY(0); }
+    .dropdown-header { padding: 15px; border-bottom: 1px solid var(--border-color); text-align: left; }
+    .credit-badge { 
+      background: rgba(217, 56, 56, 0.15); color: var(--primary); font-size: 0.75rem; 
+      padding: 4px 10px; border-radius: 6px; margin-top: 6px; display: inline-block; font-weight: 600;
+    }
+    .dropdown-item {
+      padding: 10px 15px; font-size: 0.85rem; color: var(--text-muted); 
+      display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; text-align: left;
+    }
+    .dropdown-item:hover { background: rgba(100,100,100,0.08); color: var(--text-main); padding-left: 18px; }
+    .btn-logout {
+      margin: 10px 15px 15px; background: var(--primary); color: #fff; text-align: center; 
+      padding: 9px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; border: none; cursor: pointer;
+    }
+
+    /* Mobile Nav Overlay & Drawer */
+    .mobile-nav-overlay {
+      position: fixed; top: 75px; left: 0; width: 100%; height: calc(100vh - 75px);
+      background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+      display: none; z-index: 98; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .mobile-nav-overlay.show { display: block; opacity: 1; }
+    
+    .mobile-nav-drawer {
+      position: fixed; top: 75px; left: -100%; width: 80%; max-width: 300px; height: calc(100vh - 75px);
+      background: var(--card-bg); border-right: 1px solid var(--border-color); padding: 25px 20px;
+      display: flex; flex-direction: column; gap: 12px; z-index: 99; transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    }
+    .mobile-nav-drawer.show { left: 0; }
+    .mobile-nav-drawer a {
+      color: var(--text-muted); font-size: 1rem; font-weight: 500; padding: 12px 16px; border-radius: 10px;
+      background: var(--bg-color); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;
+    }
+    .mobile-nav-drawer a.active, .mobile-nav-drawer a:hover { color: var(--text-main); border-color: var(--primary); background: rgba(217, 56, 56, 0.08); }
+
+    /* Custom Modal */
+    .custom-modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .custom-modal {
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      width: 90%; max-width: 420px; padding: 35px 30px; border-radius: 20px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3); text-align: center;
+      transform: scale(0.85) translateY(15px); opacity: 0;
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    }
+    .custom-modal-overlay.active .custom-modal { transform: scale(1) translateY(0); opacity: 1; }
+    .custom-modal-icon { font-size: 2.5rem; margin-bottom: 15px; }
+    .custom-modal h3 { font-size: 1.35rem; margin-bottom: 10px; color: var(--text-main); font-weight: 700; }
+    .custom-modal p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
+    .custom-modal-buttons { display: flex; gap: 12px; }
+    .custom-modal-btn {
+      flex: 1; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; border: none; cursor: pointer;
+    }
+    .btn-cancel-modal { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-confirm-modal { background: var(--primary); color: #fff; }
+    
+    .page-title { margin: 25px 0; }
+    .eyebrow { color: var(--primary); font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; }
+    
+    .filterbar { display: flex; gap: 15px; margin-bottom: 30px; }
+    .filterbar input, .filterbar select { 
+      background: var(--card-bg); 
+      border: 1px solid var(--border-color); 
+      color: var(--text-main); 
+      padding: 12px 16px; 
+      border-radius: 10px; 
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .filterbar input:focus, .filterbar select:focus { border-color: var(--primary); }
+    .filterbar input { flex-grow: 1; }
+
+    /* Product Grid */
+    .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .product { 
+      background: var(--card-bg); 
+      border: 1px solid var(--border-color); 
+      border-radius: 14px; 
+      overflow: hidden; 
+      display: flex; 
+      flex-direction: column; 
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .product:hover { 
+      border-color: var(--primary); 
+      transform: translateY(-5px); 
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12); 
+    }
+    
+    .thumb { background: var(--bg-color); height: 160px; overflow: hidden; position: relative; border-bottom: 1px solid var(--border-color); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+    .product:hover .thumb img { transform: scale(1.03); }
+
+    .product-id-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(11, 15, 25, 0.85);
+      border: 1px solid var(--border-color);
+      color: #38bdf8;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+      letter-spacing: 0.5px;
+      z-index: 2;
+    }
+
+    .product-body { 
+      padding: 18px; 
+      display: flex; 
+      flex-direction: column; 
+      flex-grow: 1;
+    }
+
+    .tag { display: inline-block; font-size: 0.7rem; padding: 3px 10px; border-radius: 6px; width: fit-content; font-weight: 600; margin-bottom: 10px; }
+    .tag.ff { background: rgba(255, 153, 0, 0.15); color: #ffab2e; }
+    .tag.valo { background: rgba(255, 70, 85, 0.15); color: #ff5c6c; }
+    .tag.pc { background: rgba(59, 130, 246, 0.15); color: #5194ff; }
+    .tag.app { background: rgba(245, 158, 11, 0.15); color: #fbb13c; }
+
+    .product-body h3 { font-size: 1.05rem; line-height: 1.4; font-weight: 600; color: #fff; margin-bottom: 12px; }
+    
+    .product-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: auto;
+      border-top: 1px solid var(--border-color);
+      padding-top: 12px;
+    }
+
+    .sub-text { 
+      color: #38bdf8; 
+      font-size: 0.8rem; 
+      font-weight: 500; 
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(46, 160, 67, 0.06);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(46, 160, 67, 0.2);
+    }
+
+    .price-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .price { 
+      font-size: 1.25rem; 
+      font-weight: 700; 
+      color: #4ade80; 
+      letter-spacing: 0.5px;
+    }
+
+    .no-products-message {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--card-bg);
+      border: 1px dashed var(--border-color);
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      font-weight: 500;
+      display: none;
+    }
+
+    footer { 
+      background: var(--card-bg); 
+      border-top: 1px solid var(--border-color); 
+      padding: 40px 0; 
+      margin-top: 60px; 
+      color: var(--text-muted); 
+      font-size: 0.85rem; 
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    @media (max-width: 992px) {
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) { 
+      .container { padding: 0 16px; }
+      .navbar-container { padding: 0 16px; }
+      .footer-inner { padding: 0 16px; }
+      
+      .nav-links { display: none; }
+      .menu-toggle-btn { display: flex; }
+      .product-grid { grid-template-columns: 1fr; } 
+      .filterbar { flex-direction: column; } 
+      .footer-inner { flex-direction: column; gap: 15px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="custom-modal-overlay" id="customModalOverlay">
+    <div class="custom-modal">
+      <div class="custom-modal-icon" id="modalIcon">⚠️</div>
+      <h3 id="modalTitle">ยืนยันการออกจากระบบ</h3>
+      <p id="modalDesc">คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?</p>
+      <div class="custom-modal-buttons" id="modalButtons">
+        <button class="custom-modal-btn btn-cancel-modal" onclick="closeCustomModal()">ยกเลิก</button>
+        <button class="custom-modal-btn btn-confirm-modal" id="modalConfirmBtn">ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="navbar">
+    <div class="container navbar-container">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="menu-toggle-btn" onclick="toggleMobileMenu()">☰</button>
+        <a class="brand" href="index.html">
+          <div class="logo">GM</div>
+          <div class="brand-name"><b>GameMarket</b><small>ACCOUNT STORE</small></div>
+        </a>
+      </div>
+      
+      <nav class="nav-links">
+        <a href="index.html">หน้าหลัก</a>
+        <a class="active" href="games.html" onclick="resetAndReload(event)">สินค้าทั้งหมด</a>
+        <a href="how-to-buy.html">วิธีการซื้อ</a>
+        <a href="contact.html">ติดต่อเรา</a>
+      </nav>
+
+      <div class="nav-actions">
+        <div id="loggedOutState" style="display: flex; gap: 10px;">
+          <a class="btn ghost" href="login.html" style="padding: 8px 12px; font-size: 0.85rem;">เข้าสู่ระบบ</a>
+          <a class="btn primary" href="register.html" style="padding: 8px 12px; font-size: 0.85rem;">สมัครสมาชิก</a>
+        </div>
+
+        <div class="user-menu-container" id="loggedInState" style="display: none;">
+          <div class="user-btn" onclick="toggleMenu()">
+            <div class="avatar" id="userAvatar">U</div>
+            <div style="text-align: left;" class="hide-mobile-text">
+              <div style="font-size: 0.85rem; font-weight: 600;" id="userNameDisplay">Player01</div>
+              <div style="font-size: 0.7rem; color: var(--success); font-weight: 500;" id="userCreditDisplay">0.00 ฿</div>
+            </div>
+          </div>
+
+          <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-header">
+              <div style="font-weight: 600;" id="dropdownUserName">Player01</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);" id="dropdownUserEmail">player01@example.com</div>
+              <div class="credit-badge" id="dropdownUserCreditBadge">เครดิต: 0.00 ฿</div>
+            </div>
+            <a href="profile.html" class="dropdown-item">👤 โปรไฟล์</a>
+            <a href="topup.html" class="dropdown-item">💳 เติมเงิน</a>
+            <a href="topup-history.html" class="dropdown-item">💰 ประวัติการเติมเงิน</a>
+            <a href="order-history.html" class="dropdown-item">📦 ประวัติการซื้อของ</a>
+            <button class="btn-logout" onclick="logout()">ออกจากระบบ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileMenu()"></div>
+  <div class="mobile-nav-drawer" id="mobileNavDrawer">
+    <a href="index.html">🏠 หน้าหลัก</a>
+    <a class="active" href="games.html">🎮 สินค้าทั้งหมด</a>
+    <a href="how-to-buy.html">📖 วิธีการซื้อ</a>
+    <a href="contact.html">📞 ติดต่อเรา</a>
+  </div>
+
+  <main class="container">
+    <div class="page-title">
+      <span class="eyebrow">MARKETPLACE</span>
+      <h1>สินค้าทั้งหมด</h1>
+      <p style="color: var(--text-muted);">ค้นหาและกรองไอดีเกม อุปกรณ์ไอที และแอปพรีเมียมที่คุณต้องการ</p>
+    </div>
+
+    <div class="filterbar">
+      <input type="text" id="searchInput" placeholder="🔍 ค้นหาชื่อสินค้า หรือ รหัสไอดี เช่น FF001..." autocomplete="off">
+      
+      <select id="categorySelect" autocomplete="off">
+        <option value="all">หมวดหมู่ทั้งหมด</option>
+        <option value="ff">Free Fire</option>
+        <option value="valo">VALORANT</option>
+        <option value="pc">อุปกรณ์คอมมือ 2</option>
+        <option value="app">แอปพลิเคชันพรีเมียม</option>
+      </select>
+
+      <select id="sortSelect" autocomplete="off">
+        <option value="latest">เรียงตาม: ใหม่ล่าสุด</option>
+        <option value="low-high">ราคาต่ำสุด - สูงสุด</option>
+        <option value="high-low">ราคาสูงสุด - ต่ำสุด</option>
+      </select>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+      <a class="product" href="product.html?id=1" data-category="ff" data-price="2499" data-id="1" data-code="ff001">
+        <div class="thumb">
+          <div class="product-id-badge">ID: FF001</div>
+          <img src="images/รูปปกคลัง/D01.png" alt="Free Fire">
+        </div>
+        <div class="product-body">
+          <span class="tag ff">Free Fire</span>
+          <h3 class="product-title">เลเวล 78 ยอดไลค์ 14000+</h3>
+          <div class="product-footer">
+            <span class="sub-text">คลิกเพื่อดูข้อมูลเพิ่มเติม</span>
+            <div class="price-row">
+              <span class="price-label">ราคาพิเศษ</span>
+              <div class="price">2,499 บาท</div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <a class="product" href="product.html?id=2" data-category="ff" data-price="1799" data-id="2" data-code="ff002">
+        <div class="thumb">
+          <div class="product-id-badge">ID: FF002</div>
+          <img src="images/รูปปกคลัง/D02.png" alt="Free Fire">
+        </div>
+        <div class="product-body">
+          <span class="tag ff">Free Fire</span>
+          <h3 class="product-title">เลเวล 72 ยอดไลค์ 10000+</h3>
+          <div class="product-footer">
+            <span class="sub-text">คลิกเพื่อดูข้อมูลเพิ่มเติม</span>
+            <div class="price-row">
+              <span class="price-label">ราคาพิเศษ</span>
+              <div class="price">1,799 บาท</div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <a class="product" href="product.html?id=3" data-category="valo" data-price="1499" data-id="3" data-code="VR001">
+        <div class="thumb">
+          <div class="product-id-badge">ID: VR001</div>
+          <img src="images/รูปปกคลัง/V01.png" alt="ValoRant">
+        </div>
+        <div class="product-body">
+          <span class="tag valo">ValoRant</span>
+          <h3 class="product-title">เลเวล 144 แรงค์ Immortals</h3>
+          <div class="product-footer">
+            <span class="sub-text">คลิกเพื่อดูข้อมูลเพิ่มเติม</span>
+            <div class="price-row">
+              <span class="price-label">ราคาพิเศษ</span>
+              <div class="price">1,499 บาท</div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <a class="product" href="product.html?id=4" data-category="pc" data-price="1499" data-id="4" data-code="equipment">
+        <div class="thumb">
+          <div class="product-id-badge">ID: EM001</div>
+          <img src="images/รูปปกคลัง/EM001.png" alt="Equipment">
+        </div>
+        <div class="product-body">
+          <span class="tag pc">equipment</span>
+          <h3 class="product-title">การ์ดจอ 5060</h3>
+          <div class="product-footer">
+            <span class="sub-text">คลิกเพื่อดูข้อมูลเพิ่มเติม</span>
+            <div class="price-row">
+              <span class="price-label">ราคาพิเศษ</span>
+              <div class="price">1,499 บาท</div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <div class="no-products-message" id="noProductsMsg">
+        ขณะนี้ยังไม่มีสินค้าจำหน่าย
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <b>GameMarket</b>
+      <span>© 2026 GameMarket Demo. All rights reserved.</span>
+      <a href="contact.html">ติดต่อเรา</a>
+    </div>
+  </footer>
+
+  <script>
+    function checkAuthStatus() {
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+      const loggedInState = document.getElementById('loggedInState');
+      const loggedOutState = document.getElementById('loggedOutState');
+
+      if (isLoggedIn) {
+        if (loggedInState) loggedInState.style.display = 'block';
+        if (loggedOutState) loggedOutState.style.display = 'none';
+
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser) {
+          if (currentUser.username) {
+            document.getElementById('userNameDisplay').innerText = currentUser.username;
+            document.getElementById('dropdownUserName').innerText = currentUser.username;
+            document.getElementById('userAvatar').innerText = currentUser.username.charAt(0).toUpperCase();
+          }
+          if (currentUser.email) {
+            document.getElementById('dropdownUserEmail').innerText = currentUser.email;
+          }
+        }
+      } else {
+        if (loggedInState) loggedInState.style.display = 'none';
+        if (loggedOutState) loggedOutState.style.display = 'flex';
+      }
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById('dropdownMenu');
+      if (menu) menu.classList.toggle('show');
+    }
+
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobileNavDrawer');
+      const overlay = document.getElementById('mobileNavOverlay');
+      if (drawer && overlay) {
+        drawer.classList.toggle('show');
+        overlay.classList.toggle('show');
+      }
+    }
+
+    function logout() {
+      const overlay = document.getElementById('customModalOverlay');
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDesc = document.getElementById('modalDesc');
+      const modalButtons = document.getElementById('modalButtons');
+
+      modalIcon.innerText = "⚠️";
+      modalTitle.innerText = "ยืนยันการออกจากระบบ";
+      modalDesc.innerText = "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบจากบัญชีนี้?";
+      
+      modalButtons.innerHTML = `
+        <button class="custom-modal-btn btn-cancel-modal" onclick="closeCustomModal()">ยกเลิก</button>
+        <button class="custom-modal-btn btn-confirm-modal" onclick="executeLogout()">ออกจากระบบ</button>
+      `;
+
+      overlay.classList.add('active');
+    }
+
+    function executeLogout() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('currentUser');
+
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDesc = document.getElementById('modalDesc');
+      const modalButtons = document.getElementById('modalButtons');
+
+      modalIcon.innerText = "✅";
+      modalTitle.innerText = "สำเร็จ";
+      modalDesc.innerText = "ออกจากระบบเรียบร้อยแล้ว";
+      modalButtons.innerHTML = `<button class="custom-modal-btn btn-confirm-modal" onclick="window.location.href='index.html'">ตกลง</button>`;
+    }
+
+    function closeCustomModal() {
+      const overlay = document.getElementById('customModalOverlay');
+      overlay.classList.remove('active');
+    }
+
+    window.onclick = function(event) {
+      if (!event.target.closest('.user-menu-container')) {
+        const menu = document.getElementById('dropdownMenu');
+        if (menu && menu.classList.contains('show')) {
+          menu.classList.remove('show');
+        }
+      }
+    }
+
+    function syncUserData() {
+      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser) {
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let foundUser = users.find(u => u.email === currentUser.email);
+        if (foundUser) {
+          currentUser.credit = foundUser.credit;
+          localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
+
+        const creditStr = Number(currentUser.credit || 0).toFixed(2) + ' ฿';
+        
+        const creditDisplay = document.getElementById('userCreditDisplay');
+        if (creditDisplay) creditDisplay.innerText = creditStr;
+
+        const creditBadge = document.getElementById('dropdownUserCreditBadge');
+        if (creditBadge) creditBadge.innerText = `เครดิต: ${creditStr}`;
+      }
+    }
+
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'currentUser') {
+        syncUserData();
+      }
+    });
+
+    function resetAndReload(event) {
+      event.preventDefault();
+      categorySelect.value = 'all';
+      searchInput.value = '';
+      if (history.pushState) {
+        const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        history.pushState({path: cleanUrl}, '', cleanUrl);
+      }
+      filterAndSortProducts();
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    const categorySelect = document.getElementById('categorySelect');
+    const sortSelect = document.getElementById('sortSelect');
+    const productGrid = document.getElementById('productGrid');
+    const products = Array.from(document.querySelectorAll('.product'));
+    const noProductsMsg = document.getElementById('noProductsMsg');
+
+    function applyUrlFilterAndSort() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const catParam = urlParams.get('cat');
+      const validCategories = ['all', 'ff', 'valo', 'pc', 'app'];
+
+      if (catParam && validCategories.includes(catParam)) {
+        categorySelect.value = catParam;
+      } else {
+        categorySelect.value = 'all';
+      }
+      filterAndSortProducts();
+    }
+
+    function filterAndSortProducts() {
+      const searchText = searchInput.value.toLowerCase().trim();
+      const selectedCategory = categorySelect.value;
+      const selectedSort = sortSelect.value;
+
+      let visibleProducts = products.filter(product => {
+        const title = product.querySelector('.product-title').innerText.toLowerCase();
+        const code = (product.dataset.code || '').toLowerCase();
+        const category = product.dataset.category;
+
+        const matchesSearch = title.includes(searchText) || code.includes(searchText);
+        const matchesCategory = (selectedCategory === 'all' || category === selectedCategory);
+
+        return matchesSearch && matchesCategory;
+      });
+
+      if (selectedSort === 'low-high') {
+        visibleProducts.sort((a, b) => parseFloat(a.dataset.price) - parseFloat(b.dataset.price));
+      } else if (selectedSort === 'high-low') {
+        visibleProducts.sort((a, b) => parseFloat(b.dataset.price) - parseFloat(a.dataset.price));
+      } else {
+        visibleProducts.sort((a, b) => parseInt(a.dataset.id) - parseInt(b.dataset.id));
+      }
+
+      products.forEach(product => product.style.display = 'none');
+      
+      if (visibleProducts.length > 0) {
+        visibleProducts.forEach(product => {
+          product.style.display = 'flex';
+          productGrid.insertBefore(product, noProductsMsg);
+        });
+        noProductsMsg.style.display = 'none';
+      } else {
+        noProductsMsg.style.display = 'block';
+      }
+    }
+
+    checkAuthStatus();
+    syncUserData();
+    applyUrlFilterAndSort();
+
+    window.addEventListener('pageshow', (event) => {
+      applyUrlFilterAndSort();
+    });
+
+    searchInput.addEventListener('input', filterAndSortProducts);
+    
+    categorySelect.addEventListener('change', () => {
+      const selectedCat = categorySelect.value;
+      const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + (selectedCat === 'all' ? '' : '?cat=' + selectedCat);
+      history.replaceState({path: newUrl}, '', newUrl);
+      
+      filterAndSortProducts();
+    });
+
+    sortSelect.addEventListener('change', filterAndSortProducts);
+  </script>
+</body>
+</html>
