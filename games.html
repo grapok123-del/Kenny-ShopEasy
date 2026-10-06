@@ -311,54 +311,7 @@
     </div>
   </div>
 
-  <header class="navbar">
-    <div class="container navbar-container">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <button class="menu-toggle-btn" onclick="toggleMobileMenu()">☰</button>
-        <a class="brand" href="index.html">
-          <div class="logo">GM</div>
-          <div class="brand-name"><b>GameMarket</b><small>ACCOUNT STORE</small></div>
-        </a>
-      </div>
-      
-      <nav class="nav-links">
-        <a href="index.html">หน้าหลัก</a>
-        <a class="active" href="games.html" onclick="resetAndReload(event)">สินค้าทั้งหมด</a>
-        <a href="how-to-buy.html">วิธีการซื้อ</a>
-        <a href="contact.html">ติดต่อเรา</a>
-      </nav>
 
-      <div class="nav-actions">
-        <div id="loggedOutState" style="display: flex; gap: 10px;">
-          <a class="btn ghost" href="login.html" style="padding: 8px 12px; font-size: 0.85rem;">เข้าสู่ระบบ</a>
-          <a class="btn primary" href="register.html" style="padding: 8px 12px; font-size: 0.85rem;">สมัครสมาชิก</a>
-        </div>
-
-        <div class="user-menu-container" id="loggedInState" style="display: none;">
-          <div class="user-btn" onclick="toggleMenu()">
-            <div class="avatar" id="userAvatar">U</div>
-            <div style="text-align: left;" class="hide-mobile-text">
-              <div style="font-size: 0.85rem; font-weight: 600;" id="userNameDisplay">Player01</div>
-              <div style="font-size: 0.7rem; color: var(--success); font-weight: 500;" id="userCreditDisplay">0.00 ฿</div>
-            </div>
-          </div>
-
-          <div class="dropdown-menu" id="dropdownMenu">
-            <div class="dropdown-header">
-              <div style="font-weight: 600;" id="dropdownUserName">Player01</div>
-              <div style="font-size: 0.75rem; color: var(--text-muted);" id="dropdownUserEmail">player01@example.com</div>
-              <div class="credit-badge" id="dropdownUserCreditBadge">เครดิต: 0.00 ฿</div>
-            </div>
-            <a href="profile.html" class="dropdown-item">👤 โปรไฟล์</a>
-            <a href="topup.html" class="dropdown-item">💳 เติมเงิน</a>
-            <a href="topup-history.html" class="dropdown-item">💰 ประวัติการเติมเงิน</a>
-            <a href="order-history.html" class="dropdown-item">📦 ประวัติการซื้อของ</a>
-            <button class="btn-logout" onclick="logout()">ออกจากระบบ</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
 
   <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileMenu()"></div>
   <div class="mobile-nav-drawer" id="mobileNavDrawer">
